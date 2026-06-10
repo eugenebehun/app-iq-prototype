@@ -1678,6 +1678,37 @@ function AgentCodeMark({ size = 56 }) {
   );
 }
 
+/* Clean line icons for the left rail (match the Copilot Studio v2 nav). */
+function RailHome() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M3 9.3L10 3.5l7 5.8" /><path d="M5 8.4V16h10V8.4" />
+    </svg>
+  );
+}
+function RailAgents() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M10 2.6l6.1 3.5v7L10 16.6 3.9 13.1v-7z" /><circle cx="10" cy="9.6" r="2" />
+    </svg>
+  );
+}
+function RailLayers() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M10 3l7 3.8-7 3.8-7-3.8z" /><path d="M3.2 10.4L10 14l6.8-3.6" />
+    </svg>
+  );
+}
+function RailServer() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <rect x="3.5" y="4" width="13" height="5" rx="1.4" /><rect x="3.5" y="11" width="13" height="5" rx="1.4" />
+      <path d="M6 6.5h.01M6 13.5h.01" />
+    </svg>
+  );
+}
+
 /* App IQ brand mark (purple brain) for the Add Microsoft IQ dialog. */
 function AppIQMark({ size = 28 }) {
   return (
@@ -1919,8 +1950,9 @@ function PanelRow({ title, desc, active, disabled, onAdd }) {
   );
 }
 
-function IQProviderRow({ mark, name, preview, desc }) {
+function IQProviderRow({ mark, name, preview, desc, toggle }) {
   const s = useV2Styles();
+  const [on, setOn] = React.useState(false);
   return (
     <div className={s.provRow}>
       <span className={s.provIcon}>{mark}</span>
@@ -1931,7 +1963,9 @@ function IQProviderRow({ mark, name, preview, desc }) {
         </div>
         <div className={s.provDesc}>{desc}</div>
       </div>
-      <Button className={s.provAdd}>Add</Button>
+      {toggle
+        ? <Switch checked={on} onChange={(_, d) => setOn(d.checked)} />
+        : <Button className={s.provAdd}>Add</Button>}
     </div>
   );
 }
@@ -1962,6 +1996,7 @@ function AddMicrosoftIQDialog({ open, onOpenChange }) {
             <IQProviderRow
               mark={<AppIQMark />}
               name="App IQ"
+              toggle
               desc="Federate query, reasoning, and action across your business applications, skills, and semantic models — across environments and governed by each scope."
             />
             <IQProviderRow
@@ -2029,12 +2064,12 @@ function CopilotStudioV2View({ onSwitchView }) {
           {/* left rail */}
           <nav className={s.rail}>
             <div className={s.railTop}>
-              <Button appearance="subtle" icon={<Ic n="Home20Regular" />} aria-label="Home" />
-              <Button appearance="subtle" icon={<Ic n="BotSparkle20Regular" />} aria-label="Agents" />
-              <Button appearance="subtle" icon={<Ic n="Stack20Regular" />} aria-label="Library" />
+              <Button appearance="subtle" icon={<RailHome />} aria-label="Home" />
+              <Button appearance="subtle" icon={<RailAgents />} aria-label="Agents" />
+              <Button appearance="subtle" icon={<RailLayers />} aria-label="Library" />
             </div>
             <div className={s.railBottom}>
-              <Button appearance="subtle" icon={<Ic n="Server20Regular" />} aria-label="Environments" />
+              <Button appearance="subtle" icon={<RailServer />} aria-label="Environments" />
               <Avatar size={28} color="colorful" name="Eugene Behun" initials="EB" />
               <Button appearance="subtle" size="small" icon={<Ic n="MoreHorizontal20Regular" />} aria-label="More" />
             </div>
