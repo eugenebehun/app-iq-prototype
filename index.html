@@ -939,6 +939,16 @@ const useCWStyles = makeStyles({
     paddingLeft: "6px",
   },
   agentRowMuted: { color: tokens.colorNeutralForeground3, fontSize: "12px" },
+  agentLink: {
+    display: "flex", alignItems: "center",
+    height: "30px",
+    paddingLeft: "38px", paddingRight: "8px",
+    fontSize: "13px",
+    color: "#8b86e8",
+    cursor: "pointer",
+    borderRadius: tokens.borderRadiusMedium,
+    "&:hover": { textDecoration: "underline" },
+  },
   chatRow: {
     height: "28px",
     paddingLeft: "8px", paddingRight: "8px",
@@ -1320,12 +1330,8 @@ function CoworkView({ onSwitchView }) {
             <div className={s.agentRow}>
               <AgentIcon id="coach" />Career Coach
             </div>
-            <div className={mergeClasses(s.sbLink, s.agentRowMuted)}><span style={{ width: 20 }} />All agents</div>
-            <div style={{
-              marginTop: 6, height: 32, border: `1px solid ${tokens.colorNeutralStroke1}`,
-              borderRadius: tokens.borderRadiusMedium, display: "flex", alignItems: "center", justifyContent: "center",
-              fontSize: 13, fontWeight: 600, cursor: "pointer",
-            }}>Create agent</div>
+            <div className={s.agentLink} role="button" tabIndex={0}>All agents</div>
+            <div className={s.agentLink} role="button" tabIndex={0}>Create agent</div>
 
             <div className={s.sbSection}>
               <span>Chats</span>
@@ -1643,35 +1649,10 @@ const PLUGIN_LOGOS = {
       <path d="M10 5.2a2.4 2.4 0 0 1 2.4 2.4v.3a2.1 2.1 0 0 1 1.5 1.9c0 .66-.3 1.2-.78 1.6A2.1 2.1 0 0 1 12 14.6c-.42 0-.84-.12-1.2-.36V5.2z" fill="#e9d5ff" />
     </svg>
   ),
-  d365cs: (
-    <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
-      <rect x="1" y="1" width="18" height="18" rx="4" fill="#9168e0" />
-      <path d="M6 11v-1a4 4 0 0 1 8 0v1" fill="none" stroke="#fff" strokeWidth="1.3" strokeLinecap="round" />
-      <rect x="4.6" y="10.4" width="2.4" height="4.2" rx="1.2" fill="#fff" />
-      <rect x="13" y="10.4" width="2.4" height="4.2" rx="1.2" fill="#fff" />
-      <path d="M14.2 14.4c0 1.1-1 1.8-2.2 1.8h-1.1" fill="none" stroke="#fff" strokeWidth="1.1" strokeLinecap="round" />
-    </svg>
-  ),
-  d365sales: (
-    <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
-      <rect x="1" y="1" width="18" height="18" rx="4" fill="#1e8fe0" />
-      <rect x="4.8" y="11" width="2.2" height="4" rx="0.8" fill="#fff" />
-      <rect x="8.9" y="8.8" width="2.2" height="6.2" rx="0.8" fill="#fff" />
-      <rect x="13" y="6.4" width="2.2" height="8.6" rx="0.8" fill="#fff" />
-    </svg>
-  ),
-  fabriciq: (
-    <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
-      <defs>
-        <linearGradient id="pl-fab" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#33c0b1" /><stop offset="1" stopColor="#0e9f6e" />
-        </linearGradient>
-      </defs>
-      <rect x="1" y="1" width="18" height="18" rx="4" fill="url(#pl-fab)" />
-      <path d="M7 6.2c3 0 4.3 1.5 4.3 3.3S9.8 12.9 7.6 12.9 5 11.6 5 10.1" fill="none" stroke="#fff" strokeWidth="1.4" strokeLinecap="round" />
-      <path d="M10.2 8.6c2.2 0 3.4 1 3.4 2.4s-1.4 2.4-3 2.4" fill="none" stroke="#fff" strokeWidth="1.4" strokeLinecap="round" opacity="0.85" />
-    </svg>
-  ),
+  d365cs: <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAIAAABvFaqvAAAC00lEQVR4nM2Uz0tVURDHZ859heaPFNP05ctFYAhFWpYLCbFtUFHQP1BBtnTRQoigyBZuipb9WAQGQUQUEi5qYaiFWtGPTUU/MH1Pff4izXt+zcQ5z2evpyVEi84d5s49Z+7nznzP4WJNTQ38ixGp21oPDAwADC/fD66YVJATLcyNZs6MTGdn4kRPSARMyATx5GjrleNjU6OZGdVl+5uqz/hc9M75ORm/9exgZpogC86IyXJpUbSj5Vrm8saCuobYaRkqGSrlTYZShXItlGRVJJjRl4Pkg7KiaOvRc6m1srwdzVUdWmkllZbOpwOtpcrWiCynWvOemWBf7YFEMn6v525jRbsMJaC/0k35MB3/AvLqpM3jGA43nowVHnoz9D0NyeCkb8sr8gh2SjnvicMJzllXvn3X3FD/8NLLi0hES4bIZIO8Rg7hzFMSCTAS1woI8vLKYzkf3sUFBikcMbksskR2BY2YYKnBmWnWEgKECAIxbKmuGoknJsanUs2kPsdECqeW7ZrTZZGyMI+OEmAkgIjANYgBir1NDRWVJaGaW1DzC2o+lPO5+TkTtmcFjVICawUqJEQQwAJAIAe+KEu4e3d9aVn5ZDIpgsj6guIvk70zswPZoLGp0Q3ro8aiUYyBQMsoQAgOGMlBARkEY+WmWEX5ZqP549eBvs8XsyiutbYbx+LJMS3ZWrbktPQD3JGybpKI3FnTbBR9m5u+/+rEcooDjc+Mtt9sYwRCZG+uKwS3mwzgj7s1YK3T+npP84oUBwKA4dnBzgd3DIElMMyWQVvQlp03rDRrw9aaSw93/o6yCAKArrfnH/X3WQBi1BYMOa0MobaoDVqCy931f6D8BAFA59OWx/29UoM3kpoXFIWKlOHXn7r+THG7lvlwe+AU89Xamj3aCt8RGkvdz8++Sz5YFYTLf7WxwsZtsSPF+ZuHJ148+XhhVcRvQX83xD+h/JegH04/4Rtydqk9AAAAAElFTkSuQmCC" alt="" aria-hidden="true" style={{ width: 20, height: 20, borderRadius: 4, display: "block" }} />,
+  d365erp: <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAIAAABvFaqvAAADNklEQVR4nKWUz2tkRRDHq7rnzUxmNmsmuxuGkX2PKCMajBtBIYIDHhRWMH9B5l9Y8OQhR2Heyavg3CceXG/6LywieFRwd1nYDGKS2c1k8mPy3uvuqpKeiUnIvsSDRdN0V9f78K3X1YUPvtpnERZgERAAEQRAAYWQJLvj42eD7YfJ+Cn8lxWG1p2CWGQCAgEU0QAKaqXZDxdnP7Dp7sH+o6ODX5Lk2VUgXHuwQ+QZzB4hJCiCzApEiRQ8DgLEAKGk9WD7xxd7P+QrSh0JeUVChCJAjMJArASQmTwOHIJFdErN1dYKurY96OaAnCUhBhYgAmb0awYil/5pjn5GhHJlrRi8wQCsNCldKX90++bw5eHDSyAFltCRcu7i0I5o/IjsY2ceH4++SQ9/0sYpy2Kcy+zCwvuvKlJgLZrpcMo4tFZNBtPLsyByzwuGMDWcpnSSNJfv5qSmnENinCQ1mUmx+FnUWRDzvvKJG2K+9/Fi5YbOAXktxIo9RZEgkwYUOjD05KJwypJKWa988vbNxbn9o90cUOAmKkQ8zl88GPojsb9eDFp554vXilHjzdeNkrHjjDgHNB59q/EO+oLcczJwsjM9uH3rvbuNe436Sn2hqXV1d8+NMmeVqBJmLg9k3O8X9/XGZ3O15Xrj01u1oBgoBDgBISMHhkQhKyk4tDkcKJytiuWF8K0vb8wtA8AoczrTRRZAAF+kMMpIACCQolGQq+hsVZp9lytLh4ZODywX0SsSACbxfkQFQCT6ekWk7xxmNPkQ/as7znRhKkiEYXh04kFFqBZ0wH9fB/JF8q+c5799PXj6PVxtMzMzzWYzHyRM7AwAZOO/ppRu1z/OXq/Xbrf7/X6n05l64jje2tq6hD4vX99IyDJZssnUE4VRHMdRFPX7/TAMoyhqtVpxHG9sbFyX2kSR9a2N3NQTRmGr1QKA9fV1AJiq6H7X7cSda0H2hbAFX5mnIABotVr9fn9zczMMw3a7DQD3P7+f+9fOQZA+4XRH9HyhXA9m6jbZWVpauhTd6/VyKb7Vrq6unu/0vOh5kITNID0ZTXp4vgVBUCqVrlDka2mINPRAhGq1ehUl185v7X/aPxHh/DxWp3oSAAAAAElFTkSuQmCC" alt="" aria-hidden="true" style={{ width: 20, height: 20, borderRadius: 4, display: "block" }} />,
+  d365sales: <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAIAAABvFaqvAAADJ0lEQVR4nJWSP29cRRTF75+ZXXazSRZkS1FkgVIYazFpIkiJKJEiIVxQ0iQCRAOfgAYJKaJxgUSHxDdwFao0SUuDBAGZAikUwYkNyJbjt/vevfegebvBZNdGYd4r3syb+5tzzh0ejUb0ZAxeXH3t06+Z+OjPWLko519wkRAJNJODnZ07m5s7936kU4b8ezJcu+p1slq9UVZ1TxHJLZH2z628dO3mzfW3N54JxNr3JnmT4ApPoEzIQA7kiEzpzOs33n/r8y9OBKUCy73hletpeLmz3LVaicgaNMYRHFyOCqcAg4Klvzy6vHZtY/vW1gmKlt787OzaO9K7GCbepGhSmCKESIHkx282b3Vd/+AEa3l4KQ1fbSrzxr2GV7AKPgl3cmKDWIi5mGnTvrVpaO/KjY/nQawDH5uPDRaow6vwcaCGuXiIQxzqUEPySBbZLJullatvzGdU42WraiZyMyf3yojYJwGiScPCRMwECgAhARLASLkzmAdFDGJsRO1mjqjABFiwlLAhXJbLEgOEECdiIHXPLYAcXtVETIJA4MhBhIAbwsEBlH9UKKBwEMqUSivm2u+CVhFnJgq01grAWxCXqlZkgSGKcrQ650FmmBz+xUzcyZKPHu/vF5AypbNuYCkSWuOteQdKei1xwZpPDh8SU+r1S5/3D4i5f2EgWWbnU2vtH1BJiiJ8HrT67nvaUe0mzaqZJbEmZqHd+xVL66yYmzqiCCSllKLzHBYUTYyni6XDSZ3gxEoixDLLiEpGoCgszmVt7953CxmNGwQkIizUI5JKElZuQTyVM+1aaxPUXob7t75cVOQ060i5SZGigEREhYTK6fxEEiBCIfzo+61q99d5kBdFAQ+xgDnrTBGLsLTXun3akKGZm91fHtzenO8ZUXq8/dWZ1Y/IAQ+YcorQYxAfZ0SaePLH9oNvP1mklC2j0Ug6S71LH6bn1yUrF8oMVJTItGfF3/i3rf0fvjmRMgNNv7oXNtL5V/JwnZOQHIO8etQ8vDPeuetHv59GeQo0HdJZ4s6ydJennqLes4Of/qP+OKO5edR7VO/54c/PUvyUgv9bcNr4GzEY+ONNm5iKAAAAAElFTkSuQmCC" alt="" aria-hidden="true" style={{ width: 20, height: 20, borderRadius: 4, display: "block" }} />,
+  fabriciq: <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAIAAABvFaqvAAACYElEQVR4nM3UTU8TURQG4Pece+erLaVKFamwNRK/Fm7cuOUHuNTEvS5c+md0aYxxoTFujCbGBDUaE1YSTJBSKbQILQMUS2fae4+Z0sSFpSBh4VmcWUzuk3fOzBmanJzEcZQecK9w5byx5tzUteGx/FB+KJv1csPwEL9+8PbTk+lB0PjVS1N3bjNRfmLM9d1d22rZyEqHyCqJXUQasSLzK9wZlOjuy6ejw6m0YiLZNVHLxlaMFSOwJIbRYXS7mOWvS39DvHe5+ehhNpPWDE0kYgUiSDogBFEwCnava5hwpb4vdGp0THGHASZYiBVrYa0YwBLsXpYu1Fku93muHnT9/j3FogiKKMmSJOpCsERIspDR3a5gP7+Y6QslMypcvsDcYSLuZjEwRoy1yYC2Nxvri2VXw+1ECx9mZ55/7Kv0oJOjpzWLhVRW16sba42t7Wp1NVzfaDaaynEcLaXHr/Y7/we6eOtGWCm9f/0ubse7cRzBsuM4vuf4Xi6bCTxw3CwdyAB6Y75YDFzX94xCELiaSPuuE/hu4AWepH1amZ4/hAOdPVtgRVZIa58VkyI3lRjpAGkfQwFmFyqHgkbGJxR3YNtI3g0prf2Um/KRCSjjS/XLt8rcyqEg1w8Ud4zlzbX6Zi2MokhMmys/43q4U2schuhBC3Nzy8VSO45BRJx8VtRuU7HPEgwuXV4soTsXcCKBSLa2zQGn+pROj+SQRGFiomRjeedH+ShQ9sxIwqje0gEI6+G/O9C5Ql4ERMmmExDOfj+CAkAvPXvj50+YZkuAVi1s1Y4SBwAd1z+bj0X5L6Hf788VPAM1Pf0AAAAASUVORK5CYII=" alt="" aria-hidden="true" style={{ width: 20, height: 20, borderRadius: 4, display: "block" }} />,
 };
 function PluginLogo({ id, bg, short }) {
   const L = PLUGIN_LOGOS[id];
