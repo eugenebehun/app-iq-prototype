@@ -1050,9 +1050,13 @@ const useCWStyles = makeStyles({
     display: "flex", alignItems: "center", gap: "12px",
     padding: "8px 10px",
     borderRadius: tokens.borderRadiusMedium,
+    border: "1px solid transparent",
     cursor: "pointer",
     color: tokens.colorNeutralForeground1,
-    "&:hover": { borderColor: tokens.colorNeutralStroke1 },
+    "&:hover": {
+      backgroundColor: tokens.colorNeutralBackground4,
+      borderColor: tokens.colorNeutralStroke1,
+    },
   },
   plusItemIcon: {
     width: "32px", height: "32px",
@@ -1089,17 +1093,25 @@ const useCWStyles = makeStyles({
     display: "flex", alignItems: "center", justifyContent: "space-between",
     padding: "8px 10px",
     borderRadius: tokens.borderRadiusMedium,
-    "&:hover": { borderColor: tokens.colorNeutralStroke1 },
+    border: "1px solid transparent",
+    "&:hover": {
+      backgroundColor: tokens.colorNeutralBackground4,
+      borderColor: tokens.colorNeutralStroke1,
+    },
   },
   pluginRowLeft: { display: "flex", alignItems: "center", gap: "10px" },
   browseRow: {
     display: "flex", alignItems: "center", gap: "10px",
     padding: "8px 10px",
     borderRadius: tokens.borderRadiusMedium,
+    border: "1px solid transparent",
     cursor: "pointer",
     color: tokens.colorNeutralForeground1,
     fontSize: "13px",
-    "&:hover": { borderColor: tokens.colorNeutralStroke1 },
+    "&:hover": {
+      backgroundColor: tokens.colorNeutralBackground4,
+      borderColor: tokens.colorNeutralStroke1,
+    },
   },
 
   /* ===== browse dialog ===== */
