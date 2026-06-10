@@ -419,6 +419,9 @@ function AgentBuilderView({ onSwitchView }) {
               </MenuTrigger>
               <MenuPopover>
                 <MenuList>
+                  <MenuItem icon={<IB.Sparkle20Regular />} onClick={() => onSwitchView("copilot")}>
+                    Copilot
+                  </MenuItem>
                   <MenuItem icon={<IB.WindowApps20Regular />} onClick={() => onSwitchView("copilot-studio")}>
                     Copilot Studio
                   </MenuItem>
@@ -809,6 +812,459 @@ function AgentBuilderView({ onSwitchView }) {
 }
 
 window.AgentBuilderView = AgentBuilderView;
+
+</script>
+
+<script type="text/plain" id="src-copilot">
+/* global React */
+/* =========================================================================
+   M365 COPILOT VIEW — end-user chat surface (the channel where a published
+   App IQ plugin shows up). Reuses the M365 Copilot chrome (top bar burger,
+   thin rail, agent sidebar) and renders the "Welcome, how can I help?" home
+   with the Message Copilot composer + suggestion pills. No right config rail.
+   ========================================================================= */
+const {
+  FluentProvider, webDarkTheme,
+  Button, Avatar, Tooltip, Divider,
+  Menu, MenuTrigger, MenuPopover, MenuList, MenuItem,
+  makeStyles, tokens, mergeClasses,
+} = window.Fluent;
+const CP = window.FluentIcons;
+
+const useCPStyles = makeStyles({
+  root: {
+    height: "100vh",
+    display: "grid",
+    gridTemplateRows: "48px 1fr",
+    backgroundColor: tokens.colorNeutralBackground2,
+    color: tokens.colorNeutralForeground1,
+    fontFamily: tokens.fontFamilyBase,
+  },
+
+  /* --------- TOP BAR --------- */
+  top: {
+    display: "grid",
+    gridTemplateColumns: "auto 1fr auto",
+    alignItems: "center",
+    paddingLeft: "4px",
+    paddingRight: "8px",
+    gap: "12px",
+    backgroundColor: tokens.colorNeutralBackground2,
+    borderBottom: `1px solid ${tokens.colorNeutralStroke3}`,
+  },
+  topLeft: { display: "flex", alignItems: "center", gap: "4px" },
+  topRight: { display: "flex", alignItems: "center", gap: "4px" },
+  autoBtn: {
+    height: "30px",
+    display: "inline-flex", alignItems: "center", gap: "6px",
+    paddingLeft: "12px", paddingRight: "10px",
+    fontSize: "13px",
+    border: `1px solid ${tokens.colorNeutralStroke2}`,
+    borderRadius: tokens.borderRadiusMedium,
+    backgroundColor: "transparent",
+    color: tokens.colorNeutralForeground1,
+    cursor: "pointer",
+    "&:hover": { backgroundColor: tokens.colorNeutralBackground3 },
+  },
+  composeBtn: {
+    width: "30px", height: "30px",
+    display: "inline-flex", alignItems: "center", justifyContent: "center",
+    borderRadius: tokens.borderRadiusMedium,
+    border: `1px solid ${tokens.colorBrandStroke1}`,
+    backgroundColor: tokens.colorBrandBackground2,
+    color: tokens.colorBrandForeground1,
+    cursor: "pointer",
+    "&:hover": { backgroundColor: tokens.colorBrandBackground2Hover },
+  },
+
+  /* --------- SHELL (no right config rail) --------- */
+  shell: {
+    display: "grid",
+    gridTemplateColumns: "48px 264px 1fr",
+    minHeight: 0,
+  },
+
+  /* --------- THIN RAIL --------- */
+  thinRail: {
+    backgroundColor: tokens.colorNeutralBackground2,
+    borderRight: `1px solid ${tokens.colorNeutralStroke3}`,
+    paddingTop: "6px",
+    display: "flex", flexDirection: "column", alignItems: "center", gap: "2px",
+  },
+
+  /* --------- SIDEBAR --------- */
+  sidebar: {
+    backgroundColor: tokens.colorNeutralBackground2,
+    borderRight: `1px solid ${tokens.colorNeutralStroke3}`,
+    paddingTop: "14px",
+    paddingLeft: "12px",
+    paddingRight: "12px",
+    paddingBottom: "16px",
+    overflowY: "auto",
+    display: "flex", flexDirection: "column", gap: "6px",
+  },
+  sbHeader: {
+    display: "flex", alignItems: "center", justifyContent: "space-between",
+    marginBottom: "8px",
+  },
+  sbTitle: {
+    fontSize: "14px",
+    fontWeight: tokens.fontWeightSemibold,
+    color: tokens.colorNeutralForeground1,
+  },
+  sbLink: {
+    display: "flex", alignItems: "center", gap: "10px",
+    height: "32px",
+    paddingLeft: "8px", paddingRight: "8px",
+    borderRadius: tokens.borderRadiusMedium,
+    fontSize: "13px",
+    color: tokens.colorNeutralForeground1,
+    cursor: "pointer",
+    "&:hover": { backgroundColor: tokens.colorNeutralBackground3 },
+  },
+  sbSection: {
+    fontSize: "11px",
+    color: tokens.colorNeutralForeground3,
+    paddingLeft: "8px",
+    paddingTop: "10px",
+    marginBottom: "2px",
+    display: "flex", justifyContent: "space-between", alignItems: "center",
+  },
+  agentRow: {
+    display: "flex", alignItems: "center", gap: "10px",
+    height: "32px",
+    paddingLeft: "8px", paddingRight: "8px",
+    borderRadius: tokens.borderRadiusMedium,
+    fontSize: "13px",
+    color: tokens.colorNeutralForeground1,
+    cursor: "pointer",
+    "&:hover": { backgroundColor: tokens.colorNeutralBackground3 },
+  },
+  createPill: {
+    marginTop: "6px",
+    height: "32px",
+    border: `1px solid ${tokens.colorNeutralStroke1}`,
+    borderRadius: tokens.borderRadiusMedium,
+    display: "flex", alignItems: "center", justifyContent: "center",
+    fontSize: "13px",
+    fontWeight: tokens.fontWeightSemibold,
+    color: tokens.colorNeutralForeground1,
+    cursor: "pointer",
+    "&:hover": { backgroundColor: tokens.colorNeutralBackground3 },
+  },
+  chatRow: {
+    height: "28px",
+    paddingLeft: "8px", paddingRight: "8px",
+    borderRadius: tokens.borderRadiusMedium,
+    fontSize: "13px",
+    color: tokens.colorNeutralForeground2,
+    cursor: "pointer",
+    display: "flex", alignItems: "center",
+    whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+    "&:hover": { backgroundColor: tokens.colorNeutralBackground3 },
+  },
+  chatRowActive: { fontWeight: tokens.fontWeightSemibold, color: tokens.colorNeutralForeground1 },
+
+  /* --------- CENTER (chat home) --------- */
+  center: {
+    backgroundColor: tokens.colorNeutralBackground2,
+    display: "flex", flexDirection: "column",
+    alignItems: "center", justifyContent: "center",
+    padding: "32px 40px",
+    position: "relative",
+    minHeight: 0,
+  },
+  headline: {
+    fontSize: "30px", fontWeight: tokens.fontWeightSemibold,
+    color: tokens.colorNeutralForeground1,
+    marginBottom: "36px",
+    textAlign: "center",
+  },
+  inputBox: {
+    width: "100%", maxWidth: "720px",
+    backgroundColor: tokens.colorNeutralBackground3,
+    border: `1px solid ${tokens.colorNeutralStroke2}`,
+    borderRadius: "16px",
+    padding: "16px 16px 12px",
+    display: "flex", flexDirection: "column", gap: "14px",
+    boxShadow: tokens.shadow4,
+  },
+  inputPlaceholder: {
+    fontSize: "15px",
+    color: tokens.colorNeutralForeground3,
+    minHeight: "24px",
+    display: "flex", alignItems: "center",
+  },
+  inputControls: { display: "flex", alignItems: "center", justifyContent: "space-between" },
+  inputRight: { display: "flex", alignItems: "center", gap: "2px" },
+  pillsRow: {
+    width: "100%", maxWidth: "720px",
+    display: "flex", alignItems: "center", justifyContent: "center",
+    gap: "10px",
+    marginTop: "18px",
+    flexWrap: "wrap",
+  },
+  pill: {
+    height: "32px",
+    paddingLeft: "16px", paddingRight: "16px",
+    display: "inline-flex", alignItems: "center",
+    borderRadius: tokens.borderRadiusCircular,
+    border: `1px solid ${tokens.colorNeutralStroke2}`,
+    backgroundColor: "transparent",
+    color: tokens.colorNeutralForeground1,
+    fontSize: "13px",
+    cursor: "pointer",
+    "&:hover": { backgroundColor: tokens.colorNeutralBackground3 },
+  },
+  pillMore: { width: "36px", justifyContent: "center", paddingLeft: 0, paddingRight: 0 },
+});
+
+/* Tiny inline brand tile (colored agent thumbnails in the sidebar) */
+function CPTile({ bg, children }) {
+  return (
+    <span style={{
+      width: 20, height: 20, borderRadius: 4, background: bg,
+      display: "inline-flex", alignItems: "center", justifyContent: "center",
+      color: "#fff", fontSize: 11, fontWeight: 700, flex: "none",
+    }}>
+      {children}
+    </span>
+  );
+}
+
+/* Audio / dictation waveform glyph (matches the composer's right control) */
+function WaveGlyph() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true" fill="none"
+      stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
+      <path d="M4 8v4M7 5v10M10 7v6M13 4v12M16 8v4" />
+    </svg>
+  );
+}
+
+function CopilotView({ onSwitchView }) {
+  const s = useCPStyles();
+
+  return (
+    <FluentProvider theme={webDarkTheme} style={{ height: "100vh" }}>
+      <div className={s.root}>
+        {/* ===== TOP BAR ===== */}
+        <header className={s.top}>
+          <div className={s.topLeft}>
+            <Menu>
+              <MenuTrigger disableButtonEnhancement>
+                <Tooltip content="App launcher" relationship="label">
+                  <Button appearance="subtle" icon={<CP.PanelLeft24Regular />} aria-label="App launcher" />
+                </Tooltip>
+              </MenuTrigger>
+              <MenuPopover>
+                <MenuList>
+                  <MenuItem icon={<CP.Sparkle20Regular />} onClick={() => onSwitchView("copilot")}>
+                    Copilot
+                  </MenuItem>
+                  <MenuItem icon={<CP.WindowApps20Regular />} onClick={() => onSwitchView("copilot-studio")}>
+                    Copilot Studio
+                  </MenuItem>
+                  <MenuItem icon={<CP.WindowApps20Regular />} onClick={() => onSwitchView("copilot-studio-v2")}>
+                    Copilot Studio v2
+                  </MenuItem>
+                  <MenuItem icon={<CP.BotSparkle20Regular />} onClick={() => onSwitchView("agent-builder")}>
+                    Agent Builder
+                  </MenuItem>
+                  <MenuItem icon={<CP.PeopleTeam20Regular />} onClick={() => onSwitchView("cowork")}>
+                    CoWork
+                  </MenuItem>
+                  <MenuItem
+                    icon={<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4l-5 8 5 8h6l5-8-5-8H9z" fill="none" stroke="#742774" strokeWidth="1.6"/><path d="M11.5 9.5l-1 2.5h1.5l-1 2.5 2.5-3h-1.5l1-2z" fill="#742774"/></svg>}
+                    onClick={() => onSwitchView("power-platform")}
+                  >
+                    Power Platform
+                  </MenuItem>
+                </MenuList>
+              </MenuPopover>
+            </Menu>
+          </div>
+
+          <div />
+
+          <div className={s.topRight}>
+            <Menu>
+              <MenuTrigger disableButtonEnhancement>
+                <button className={s.autoBtn} aria-label="Model: Auto">
+                  Auto
+                  <CP.ChevronDown16Regular />
+                </button>
+              </MenuTrigger>
+              <MenuPopover>
+                <MenuList>
+                  <MenuItem>Auto</MenuItem>
+                  <MenuItem>Quick response</MenuItem>
+                  <MenuItem>Think deeper</MenuItem>
+                </MenuList>
+              </MenuPopover>
+            </Menu>
+            <Tooltip content="New chat" relationship="label">
+              <button className={s.composeBtn} aria-label="New chat"><CP.Compose20Regular /></button>
+            </Tooltip>
+            <Tooltip content="Chat options" relationship="label">
+              <Button appearance="subtle" icon={<CP.ChevronDown20Regular />} aria-label="Chat options" />
+            </Tooltip>
+            <Tooltip content="Protected" relationship="label">
+              <Button appearance="subtle" icon={<CP.ShieldCheckmark20Regular />} aria-label="Protected" />
+            </Tooltip>
+            <Tooltip content="More" relationship="label">
+              <Button appearance="subtle" icon={<CP.MoreHorizontal20Regular />} aria-label="More" />
+            </Tooltip>
+          </div>
+        </header>
+
+        {/* ===== SHELL ===== */}
+        <div className={s.shell}>
+
+          {/* --- thin rail --- */}
+          <nav className={s.thinRail}>
+            <Tooltip content="Notifications" relationship="label">
+              <Button appearance="subtle" icon={<CP.Alert20Regular />} aria-label="Notifications" />
+            </Tooltip>
+            <Tooltip content="Chat" relationship="label">
+              <Button appearance="subtle" icon={<CP.Chat20Regular />} aria-label="Chat" />
+            </Tooltip>
+            <Tooltip content="Calendar" relationship="label">
+              <Button appearance="subtle" icon={<CP.Calendar20Regular />} aria-label="Calendar" />
+            </Tooltip>
+            <Tooltip content="OneDrive" relationship="label">
+              <Button appearance="subtle" icon={<CP.Cloud20Regular />} aria-label="OneDrive" />
+            </Tooltip>
+            <Tooltip content="Microsoft 365" relationship="label">
+              <Button appearance="subtle" icon={<CP.GridDots20Regular />} aria-label="Microsoft 365" />
+            </Tooltip>
+            <Tooltip content="More" relationship="label">
+              <Button appearance="subtle" icon={<CP.MoreHorizontal20Regular />} aria-label="More" />
+            </Tooltip>
+            <Tooltip content="Add" relationship="label">
+              <Button appearance="subtle" icon={<CP.Add20Regular />} aria-label="Add" />
+            </Tooltip>
+          </nav>
+
+          {/* --- sidebar --- */}
+          <aside className={s.sidebar}>
+            <div className={s.sbHeader}>
+              <span className={s.sbTitle}>M365 Copilot</span>
+              <Tooltip content="Collapse" relationship="label">
+                <Button appearance="subtle" size="small" icon={<CP.PanelLeftContract16Regular />} aria-label="Collapse" />
+              </Tooltip>
+            </div>
+
+            <div className={s.sbLink}>
+              <CP.Chat20Regular />
+              <span>New chat</span>
+            </div>
+
+            <div className={s.sbSection}>Agents</div>
+            <div className={s.agentRow}>
+              <CPTile bg="linear-gradient(135deg,#0c8ce9,#22d3ee)">R</CPTile>
+              <span>Researcher</span>
+            </div>
+            <div className={s.agentRow}>
+              <CPTile bg="linear-gradient(135deg,#a855f7,#ec4899)">A</CPTile>
+              <span>Analyst</span>
+            </div>
+            <div className={s.agentRow}>
+              <CPTile bg="linear-gradient(135deg,#7c3aed,#a855f7)">C</CPTile>
+              <span>Cowork (Frontier)</span>
+            </div>
+
+            <Divider style={{ marginTop: 6, marginBottom: 2 }} />
+
+            <div className={s.agentRow}>
+              <CPTile bg="linear-gradient(135deg,#0ea5e9,#22d3ee)">E</CPTile>
+              <span>Employee Self-Service</span>
+            </div>
+            <div className={s.agentRow}>
+              <CPTile bg="linear-gradient(135deg,#10b981,#34d399)">C</CPTile>
+              <span>Career Coach</span>
+            </div>
+
+            <div className={s.sbLink} style={{ color: tokens.colorBrandForegroundLink, fontSize: 13 }}>
+              <span style={{ width: 20 }} />
+              <span>All agents</span>
+            </div>
+            <div className={s.sbLink} style={{ color: tokens.colorBrandForegroundLink, fontSize: 13 }}>
+              <span style={{ width: 20 }} />
+              <span>Create agent</span>
+            </div>
+
+            <div className={s.sbSection}>
+              <span>Chats</span>
+              <CP.Search16Regular />
+            </div>
+            {[
+              "Connecting with Microsoft Cu…",
+              "HRC and Organizational Impact",
+              "Microsoft HRC Roles Explained",
+              "Open File in Sidebar for Colla…",
+              "Meaning of “imo”",
+              "Feedback for Srikumar Nair D…",
+              "Deloitte Excel MCP Integratio…",
+              "Deloitte Excel MCP Integratio…",
+              "Microsoft Canada Fitness Rei…",
+              "Email on Deprecating Claude …",
+              "Expense Report Tool Link",
+              "Alternative Steps for Cytric Bo…",
+              "Claiming Back Pay After Late …",
+              "Hi AskHR team, I need help re…",
+              "Reimbursement and Relocati…",
+              "Choosing Between Concur an…",
+              "Find Campair Excel Participati…",
+            ].map((c, i) => (
+              <div
+                key={i}
+                className={mergeClasses(s.chatRow, (i === 8 || i === 14) && s.chatRowActive)}
+              >{c}</div>
+            ))}
+            <div className={s.sbLink} style={{ color: tokens.colorNeutralForeground3, fontSize: 12 }}>
+              <CP.MoreHorizontal16Regular />
+              <span>All chats</span>
+            </div>
+          </aside>
+
+          {/* --- center (chat home) --- */}
+          <section className={s.center}>
+            <div className={s.headline}>Welcome, how can I help?</div>
+
+            <div className={s.inputBox}>
+              <div className={s.inputPlaceholder}>Message Copilot</div>
+              <div className={s.inputControls}>
+                <Button appearance="subtle" icon={<CP.Add20Regular />} aria-label="Add content" />
+                <div className={s.inputRight}>
+                  <Tooltip content="Dictate" relationship="label">
+                    <Button appearance="subtle" icon={<CP.Mic20Regular />} aria-label="Dictate" />
+                  </Tooltip>
+                  <Tooltip content="Talk to Copilot" relationship="label">
+                    <Button appearance="subtle" icon={<WaveGlyph />} aria-label="Talk to Copilot" />
+                  </Tooltip>
+                </div>
+              </div>
+            </div>
+
+            <div className={s.pillsRow}>
+              <button className={s.pill}>Reword</button>
+              <button className={s.pill}>Explain</button>
+              <button className={s.pill}>Proofread</button>
+              <button className={s.pill}>Trending</button>
+              <button className={mergeClasses(s.pill, s.pillMore)} aria-label="More prompts">
+                <CP.MoreHorizontal20Regular />
+              </button>
+            </div>
+          </section>
+
+        </div>
+      </div>
+    </FluentProvider>
+  );
+}
+
+window.CopilotView = CopilotView;
 
 </script>
 
@@ -1244,6 +1700,9 @@ function CoworkView({ onSwitchView }) {
               </MenuTrigger>
               <MenuPopover>
                 <MenuList>
+                  <MenuItem icon={<IC.Sparkle20Regular />} onClick={() => onSwitchView("copilot")}>
+                    Copilot
+                  </MenuItem>
                   <MenuItem icon={<IC.WindowApps20Regular />} onClick={() => onSwitchView("copilot-studio")}>
                     Copilot Studio
                   </MenuItem>
@@ -1973,6 +2432,9 @@ function AppLauncher({ onSwitchView }) {
       </MenuTrigger>
       <MenuPopover>
         <MenuList>
+          <MenuItem icon={<Ic n="Sparkle20Regular" />} onClick={() => onSwitchView("copilot")}>
+            Copilot
+          </MenuItem>
           <MenuItem icon={<Ic n="WindowApps20Regular" />} onClick={() => onSwitchView("copilot-studio")}>
             Copilot Studio
           </MenuItem>
@@ -10051,6 +10513,9 @@ function PowerPlatformView({ onSwitchView }) {
               </MenuTrigger>
               <MenuPopover>
                 <MenuList>
+                  <MenuItem icon={<IP.Sparkle20Regular />} onClick={() => onSwitchView("copilot")}>
+                    Copilot
+                  </MenuItem>
                   <MenuItem icon={<IP.WindowApps20Regular />} onClick={() => onSwitchView("copilot-studio")}>
                     Copilot Studio
                   </MenuItem>
@@ -10816,6 +11281,9 @@ function TopBar({ onSwitchView }) {
         </MenuTrigger>
         <MenuPopover>
           <MenuList>
+            <MenuItem icon={<I.Sparkle20Regular />} onClick={() => onSwitchView("copilot")}>
+              Copilot
+            </MenuItem>
             <MenuItem icon={<I.WindowApps20Regular />} onClick={() => onSwitchView("copilot-studio")}>
               Copilot Studio
             </MenuItem>
@@ -11174,6 +11642,9 @@ function App() {
   const [view, setView] = React.useState("power-platform");
   const [showTest, setShowTest] = React.useState(false);
 
+  if (view === "copilot" && window.CopilotView) {
+    return <window.CopilotView onSwitchView={setView} />;
+  }
   if (view === "agent-builder" && window.AgentBuilderView) {
     return <window.AgentBuilderView onSwitchView={setView} />;
   }
@@ -11242,7 +11713,7 @@ if (window.Fluent && window.FluentIcons) {
 
     // Order matters: view components must be on `window` before app.jsx
     // (last) runs and self-mounts the <App/> router.
-    for (const id of ["src-agent-builder", "src-cowork", "src-copilot-studio-v2", "src-app-iq", "src-power-platform", "src-app"]) {
+    for (const id of ["src-agent-builder", "src-copilot", "src-cowork", "src-copilot-studio-v2", "src-app-iq", "src-power-platform", "src-app"]) {
       const src = document.getElementById(id).textContent;
       const out = Babel.transform(src, { presets: ["env", "react"] }).code;
       // eslint-disable-next-line no-new-func
