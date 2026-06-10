@@ -10376,7 +10376,8 @@ function InstructionsCard() {
 
 function MicrosoftIQCard() {
   const s = useStyles();
-  const [on, setOn] = React.useState(true);
+  const [workOn, setWorkOn] = React.useState(true);
+  const [appOn, setAppOn] = React.useState(true);
   return (
     <section className={s.card}>
       <div className={s.cardTitle} style={{ marginBottom: 10 }}>Microsoft IQ</div>
@@ -10395,7 +10396,28 @@ function MicrosoftIQCard() {
             <div className={s.iqDesc}>Grounds responses in your organization's data from Microsoft 365.</div>
           </div>
         </div>
-        <Switch checked={on} onChange={(_, d) => setOn(d.checked)} />
+        <Switch checked={workOn} onChange={(_, d) => setWorkOn(d.checked)} />
+      </div>
+      <div className={s.iqRow} style={{ borderTop: `1px solid ${tokens.colorNeutralStroke2}` }}>
+        <div className={s.iqLeft}>
+          <div className={s.iqIcon}>
+            <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+              <defs>
+                <linearGradient id="aibl-iq" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stopColor="#a855f7" />
+                  <stop offset="1" stopColor="#6d28d9" />
+                </linearGradient>
+              </defs>
+              <path d="M12 3a4 4 0 0 0-4 4v.5A3.5 3.5 0 0 0 5.5 11c0 1.1.5 2 1.3 2.7A3.5 3.5 0 0 0 9 19c.7 0 1.4-.2 2-.6V3z" fill="url(#aibl-iq)" />
+              <path d="M12 3a4 4 0 0 1 4 4v.5a3.5 3.5 0 0 1 2.5 3.5c0 1.1-.5 2-1.3 2.7A3.5 3.5 0 0 1 15 19c-.7 0-1.4-.2-2-.6V3z" fill="#7c3aed" />
+            </svg>
+          </div>
+          <div>
+            <div className={s.iqName}>App IQ</div>
+            <div className={s.iqDesc}>Grounds responses and actions in your business applications, skills, and semantic models across environments.</div>
+          </div>
+        </div>
+        <Switch checked={appOn} onChange={(_, d) => setAppOn(d.checked)} />
       </div>
     </section>
   );
