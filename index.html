@@ -1251,19 +1251,19 @@ function CoworkView({ onSwitchView }) {
             </div>
             <div className={s.sbSection}>Agents</div>
             <div className={s.agentRow}>
-              <Tile bg="linear-gradient(135deg,#0c8ce9,#22d3ee)">R</Tile>Researcher
+              <AgentIcon id="researcher" />Researcher
             </div>
             <div className={s.agentRow}>
-              <Tile bg="linear-gradient(135deg,#a855f7,#ec4899)">A</Tile>Analyst
+              <AgentIcon id="analyst" />Analyst
             </div>
             <div className={mergeClasses(s.agentRow, s.agentRowActive)}>
-              <Tile bg="linear-gradient(135deg,#7c3aed,#a855f7)">C</Tile>Cowork (Frontier)
+              <AgentIcon id="cowork" />Cowork (Frontier)
             </div>
             <div className={s.agentRow}>
-              <Tile bg="linear-gradient(135deg,#0ea5e9,#22d3ee)">E</Tile>Employee Self-Service
+              <AgentIcon id="employee" />Employee Self-Service
             </div>
             <div className={s.agentRow}>
-              <Tile bg="linear-gradient(135deg,#10b981,#34d399)">C</Tile>Career Coach
+              <AgentIcon id="coach" />Career Coach
             </div>
             <div className={mergeClasses(s.sbLink, s.agentRowMuted)}><span style={{ width: 20 }} />All agents</div>
             <div style={{
@@ -1562,6 +1562,18 @@ const CW_ART = {
 };
 function CardArt({ id }) {
   return <img src={CW_ART[id]} alt="" aria-hidden="true" height="58" style={{ display: "block" }} />;
+}
+
+const AG_ICONS = {
+  researcher: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAElElEQVR4nO2Wy26bRRSAv7n8tuM4juNESWhpLVElqlRasWgrChLQIgErUDdc1ohH4RXgBRCiEhsQEkhIrFCFoNColxRKgihN0zZOc7Gd2P9lZtBM4jQI7KYs2gUc6Xgse2a+c50ZUavVHI9B5OOAevkf/MhEPjrUfx2se/6hNUqpoF6EEP84zxiDtZY0TXHO/XuwUoooisK4e6Nem0opd9Z4eJIkDw/WWpPL5f4CkkoTDQ2RGyyh8gWEVDhryOKYtNUkaTVxJgtzPdxHJo7jvYOVUjtQL0JK8pURqlOHGTv6DJVD0xTHJpBRAdOO2VxaYnXuF5ZnZ1ibv0bcWMVZG4z3Rj/Ic9E9qwuFQghb18uhAzVqZ15h8sQpcqUKzoKzIox0vztIGuvcvXiem99+RWvxRvC+63WWZf091tuF5C31npb2P8nU2bcZP3YchMLEYhd0C4jz6RDogRH2PfsqUbnK/BcfsXH7xo7n/cCyG+ZuTqNiiYMvvUF1+iRZJ0fWUmRtiekITCwxicB6TQXWgPXGSMXokRMcOPM6uljaSV03gj093mkZqSmNP01532mSlUIwSwgHwuG7qVvXobOk/90v3vrdGkGldpLKxCUa7RkSux7AvtV6gru7FSqTjNROk62XsTGogkVoi/AGKK8uAMPoYYkhvRnj5tuIOyl2w3Jw9TUGK6fJ1E1+uPsx61m9N7gwXGH67LsUSkcxjQq2Y3GZwqYKlReIvEXi8+89d9jMYObacGUTvZziNi10fKVZirbCWLnIWHmK0cES566+3xt8+K33qB56nriucS2PsB7jw+BriZCqbW/TegwzG+iFBJ05lK9wIbHaoYzPjiCvJcMDRSarpzh3tU+OK08dw6Zyq1rzPrwZIrKInEBGAqEdNskws5vI2Q65tkMJhdYhxQhlcd4oY0KRDkSKckHye2umf3HVL19kZOo5yOeRvpB8PqPtAsogu5XirnXI1Q06AAVKCLQUKBxS+TowCONIsw5SrfBb8yc+mf2g/wFSmdhP7eV3KD4xjVJD6KiKyBxmzeL+yNBLhshJlFRoKbfVw7f6UWJRNoW4w42757ne+pxGtkScxOH87ulx2lrj188+JFeqUqoeY3z4TfLJINpIIg9TEVr5UaG2wX4MYOHDneEDhGpyO/ueRlbH7TRfn1AbY0LPJc17NDYvMLh5iMGRF9F665bSAb6tcguupAhp0SIjJxwRGXMrP1LvzGOdCcdmrx72Eo4WP6F73xqzwXLja5qbl1FKolUOre+r8sZojVaQVxkDKqUg2txZu8DVxS+Js42wjy+yfmDtP3we/JUWFmDpJLdYXP4UR5PJ0RdQenSXx9tekpAXCSatM1f/jiu3v2FlcwHntpx40MNAdG8nfyV6eHeyEJKcHqEydITxynHGKkcYHpigqBXSNog7C9xr/MzC6iUW16+zkawHaFfa7fbewF7y+fzOfdoVITQ5XSYfldGqENrI95gxbeK0RTtthpzeny/odDqhbvb8AonjOEB3e+5cRpyuBO0nHujX7AX6N7AX/3LwRdG9o/ciHuhz+jAPvj8B9Jk6GM1eNmcAAAAASUVORK5CYII=",
+  analyst: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAACh0lEQVR4nO2UTU8TQRiAn9mZblsoECqIBKQiSjjgwZOJBk1Ao4lyMPHk7+NHGGPUxIOJQY2iCRq+AshX+ZBS2u3Ozq7ZTSSgpXQ5lAtPMtlNduZ99n3nnRG5XC7gDLDOQhpyLm4YVuNURzkXNwyrcaqjnIsbhjr2g1JIKaMRIoSoOs8Yg+/7aK0JguD0YikliUQieh4OdFxQy7IO1oRy13Xji5VS2LZdU1SNpEyRlmmslEXZLbFd3MYP/PrEUsoDaRxak208zD1htPs+GZFiavMzEzMTzO3M1ZRbf1/CUp2Guz2jPLj0iAu0YbuCm03DPL/8jCY7XXOddbiR4hI23NXmflpEikC7+NGoMJS8QlKlTi61/KeR4lCs7OI6+9hGRHK8CoXKNpYUUeOFHV+NKOPTZBsS/uynrY8sVRbQpoTRJfLOOq+23+H6OhLHPsf1smKt8jO7SH5znf3fO8yW5nlf+IIXeCeLhRCxSy0QqESCgcEh9jtd3sy8ZmVtCeMb6ompYsmEoCPdTa51iJRswbM1XdkOFudn2MxvHEjrQcURd6a7udPzmOHsCJIWdv0Cv/LfWJp9i+OU44QiljjM9EZ2BJssJW1AZ0g4fQTlVOytsuqdKKUik8yiRCtlbShrj5LrI/w2JLXPbDWOZJxoztBze4xM33V0cZ/81w8UZqZob2+nL9dPZ3M3hXIRo9OUtB9lna8s45ji6cTGGFQySW5snN6xp8imLLrkkO66Bv2TDLTI6Ggsz06zurFFr7qFDNrJO0tMF16wp9eqBj/u8jgQhxOUnaTn3jiyuQOvYvD8BPbFQZTnsf79JYsLc2xt5kErfshJpEjhmD2Keg3t/99Y4Z7XEv8B47IR+e+GEPUAAAAASUVORK5CYII=",
+  cowork: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAEU0lEQVR4nO2VS4scVRiGn1P36sv0dM+twySZaRiSmBghoIiXgCuJCwm4EZdu/AWu/CH+ANfu1KALFyEoIlFI0CRDrkzmlpl093T3dFd3nZtU9SQGiTPqIlmYF746h6LOeb7vrfpOiYWFBctzkMNzkjc/P/98wFtbW/yvrHZegJ+VnGdG+otegJ+ZvKfd9F0X3/UpOBGHgllqXo2m3uHu6D7KaBAeAhdjFVqnGKOw1v53cCn0OVSu8Gr1MGfiBvNiETGqoW2RTpjydfMSV1u7VIrvMioeoS2vYfsXUekdhmkLpeW/AwsBS3MTnDu2wDtzDcqDSdJOgdHAYyQAC1PxFK+VP8TtF+g4Ads2xfrHWJx7E2d4lY3uBTrJMoNRa7zgn4Abc0U+ff8ELxVnUU0flVgEWZCPuSzEtkzRxAysxDMCxxEQl6hPnmdm8g022hfY7Fyktfs7yiT7gp2s2rOnp3lloQzCZqSx8vFR5hasxbECLwsDjgXP8aAckpQcbKXO4fmPOXn0MxqzHyGEt3/FruMyWRw/lCUxnmTAvSTyOXtgxmDrIKwlKMSYsk/ig5TgpQIvPM5i8QibvR/o9Zf/Huy4zlNg43hsM5Z06DIaGKRt0tcPSZTArRzFVnxSV6BSi5vBswgKVGpn9geLrMwnYI8DQ0f1uJU8ZC3psyF3WU8SdnSfgR4g7TS1qU8QNZ+sw0wqMBJ0alEB+bvf12qR+ytym7XWtJst2mu7bO10+anX59d+SmIkQ5MircTuuRBXfMJZF7fiYCXYNIOCkeMEJL39wQAq1Vz/cYPtGx2sVPiuRLgpeIotaZ7aHKWFU8T1Ol5xDDKpHScgs/1gmKwcALaW+1d2qCuHQqiJi5Ig1viR5uy0YUsIftl+9NWNJdyASuNlyrPTGAsqszj4MwHjjUia1/cHWwtpP2Vi2s2hGdAPNUFsWYoFH5Sg9xvcbOYfdq5wZoloYpYoMBjHonyBUqCzCATdtctYtX8fe9le11LJ276mEGnCgiWccInnIkrHq1QnDcmVHl98NWJ1TWGsQzC7SLc/Itq8S7U+RxAUkb6LUg7KNXRvfHvg2e1ll83U8vmK5txReG+pQO1EhagRMWCXVmqZOVnmLVng++/67AxKeNUJlG6xfq9Nc/M29SOHKZRqaO0yfLBGZ/kSWHMw2AJNCZd1yPnX5/BnEpqjLi3t0lIROzakejzilGNYvlck9Ueo9H6+XI0c7nTv4fVaiF6P5s2ryEEHYw4A2z1LXEdwuA6lyQ4biaClA9ompKsjetn5LEImGxHzMayuPmCUZD+DOIcL4dBbuUVy+yZWSrIWPdBqYwyu66KN5c6a4ue7lsKhAjs5MGJXRwxMRGJihjaiWAuZVkO21jYZ9rex1s/PZT1swRNVHgR2HlmSDSvrhi+/SVleD2iqEm1VoqtL9FSZviozVBNIXSWeaFCtnyYqTSHMAPlgFdVsY43Jqz3I5gz4B/4LLTHqaUIAAAAAAElFTkSuQmCC",
+  employee: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAEBElEQVR4nO1WS1MbRxD+Zh9aEAIhcIAUAWFjV+GyHaeSVCW3OHaRu+Nwyi+0L+SW+BRffEhVTokdMJGBgIvCEkaJWLESO49U9+yuxMOLT/jiqRpN105Pf91fd89IVKtVg/cwnPcBSuMD8IUN5+Kgjo8PwBc2vJMfhmfm8fHXixhbuI1g9BIgBIQQ2X4mC96yAgyi/Qaaa39g5+ljtP6pnQss+m+u2cUfUF1cSi2eADwpnHDC/rAbG788xMbPD98t4tl7DzB79wGM0plx02cw844YSESTyrzfA65+twSjDTYfP8qv6tL0FUzf+R5KGWhtoJWG1poPk6GC6/AMPAeBK1DwHDtdC5zpJ6tWBrOLSxieuZof8cQX3zIIx5Wy5whUSgEWJsss9zGc0UuUGGOwVm9hPzpiuT8dU1/dw8F27e0Rj1y5aT3laaP2HAeXx0uYqwwh7koIZTAa+JgYCjA64MPRQHwkMTdaxNxYCb4Q2dmUgfL8zfyIvVKFlTmjwkbtCyDwXKzs/offNxsYKw3g2lQZpcBHeBSj9rqF/bCDWBsUA48NRZLqo1cXhZGxfGBDmDxMUlD0zQDaQJH3SqN12MXfO014rgOpDcJOzDqKcmsMyzZdlAFzqivOpFrHgJaAUXbqZKWUU9qIPik1KsUAn82Mo1IsIJaanWIw1klSZXqFaVnMi1gmLZFGSzKB0zlaJTA/MYxb0xWEXYlPp8cgNPBi91/WSaPVTHXaVr1CPWtwxGSYwftXijg1KoGi6/G39XoIJQ0GHZdZIh1mhnS5MWyK+Jwy5wArASjBa0o3gXGqEnnlVQvtQ4kfv5xDO5JY3WklrBBI7ww5w6lip3EO1bGll6nhuzlxRts5VPAxWR7Ey/oBTxoTw4OoEysKTHvGGnppy6PasxEnPZ8o8iEyoogSgc+r47h7axK13dDenQKYnyrh1+e7iJna08B4J2Bp7F18LOIkdwoIOxLruyF+W91D+0hiKPDgwKAdKfi+a5mhNBF4+mrlgB6rau450etldoaKQxnUtg8wMuDj9lwFkVQY9F1s1SPUXh3gerWcVDTlN7GRvWQmH1ge7MMrjicH7OFuR+OwLXGjWma6tQa6scbwgI/DruTCuTEziuufjGBlu4VuR7GzFC6niuy23+QDhzvPUL78TeKlXaK2wurLFojUAc++nu1Q8SQdFw5cV6C2FWJ1s4XoUCVPZ9K/AmhtPcsHbq4/QXn2zrHXiVridaODN806CgWnj75+KsE3mKQbLLki7Wr3mi+e5ANHzXU0ni/jo4X7x4qCKKNHID6iKNMnr8+BPpDsz0LSSo0/lxHtbeQD09hbW+bzl67dPzOy7EHOvmfEnnJmb2UZjb9+eisobfwPh8o+u+Tp2I4AAAAASUVORK5CYII=",
+  coach: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAADh0lEQVR4nO2VTW9bRRSGn/m4cx03cdxAoIDaLKBCIAGtgEqIJWLBjiVCYsXf4gfwFxBiDYhVF6AKiRCVlqaJyadr+975Qmdsh0QoSWGRbnKk8bm+d2ae856ZOaPW1tYyz8D0s4CKXYIvzPTFoU7aJfjCTF8c6qRdgi/M7KkfrMUYU5qYUhrUsQ7lasnEGEkp4b0n5/z/wcYYqqoqvkykDHZhibp3FWOrOZHoPc3BLnlyiDG5jBF427b/HWytxTk3FVSgmnr1dVbvfEHv+htoPQ0mp0RoWvY3fmH37te0u79CTgWulKJpmqcHG2OOoHPTrke1+i7jkWP326+IowFZFOeMciu4Fz7Erd4mjjaJk70SlAQv/jzldv4g0f7LVEXwjnD/LpP1byD5E99i6FMvdlGmPnotUJlL1j2EcDbYzjaSZNfWjoXeMqZyYJfBKVTWdK69Ajn+A0CTOhWVc+iVF4nditC2+NE+ybdlznPBRqBAt99n7b0PuP72LRZ6fRKOpFbKflLhVlGTEqSsSvP5eRKGdvIWk3HD4faAwb2fOPz9R1Q7RGtdlJ8JtlXFmx99wp3Pv6S6UhPkiARNDIoYpWnC7Fl8iGADeMm+f5U0jnT7LVeXbuO9ZbLx3flgse5yn/c//YxqoYtPLSFlfMwF7gUUMt4rvJ8G4AMEL+/FQzvONJNEzB3qGx/TPPwB3Yw4s1YrreksLdO/9jIxMVV1rInqorIopqiNYeZnLSUlJ0pmw3RWwV45s6DYowiMQRlJDYQZPEqqC3z2fx7IHDZ7L17G5SylTaGMnVa6E6XuFHCS1Po0U8zROoqy6eQKrRTWqBnkGDTOoaW28jRmy2+G8bBlZ3MMzhSgrOk8lTkqlrqafm9amWRd/3wc2B7EEqiM1yphLNhKjl8ky8BZeT0dTGY88vz8/Tbv3HwOpxRelKc8zQCRjtN0F9RUaQU9Hcs5lY0nfTKJqDNjndnd2iZJ1OcqZloQ7j/wmPEBNzo1HWSzFDohJ/aeOIY6EWMiSUncGOL+aOlkRZTznRPDZsJgc4uDh49PPUYcB8tk1lhSvcj6vmd7f4SV6y4EYpDrLvJSWOQ1JVdkps2JB+sDHv32FynIvgikFGi85+DJCB8C0vMseAFLB6VVKSKJzEGM5TIQZUnuBFnrrTFxmMqAJnoe7YzYCZEYAlnAMiYldO3ouJqwJ5vwdNV/A0jtNozuVWtuAAAAAElFTkSuQmCC",
+};
+function AgentIcon({ id }) {
+  return <img src={AG_ICONS[id]} alt="" aria-hidden="true"
+              style={{ width: 20, height: 20, borderRadius: 5, flex: "none", display: "block" }} />;
 }
 
 /* Real product logos for the plugins dropdown (approximated as crisp SVG). */
@@ -9956,6 +9968,7 @@ const useStyles = makeStyles({
   actions: { display: "flex", alignItems: "center", gap: "8px", justifyContent: "flex-end" },
 
   content: {
+    zoom: 0.9,
     paddingTop: "16px",
     paddingLeft: "32px",
     paddingRight: "32px",
@@ -10233,7 +10246,7 @@ function Rail({ active, setActive }) {
 /* ============================================================
    AGENT HEADER (title + tabs + actions)
    ============================================================ */
-function AgentHeader({ tab, setTab }) {
+function AgentHeader({ tab, setTab, onTest }) {
   const s = useStyles();
   return (
     <div className={s.agentHeader}>
@@ -10288,7 +10301,7 @@ function AgentHeader({ tab, setTab }) {
             </MenuList>
           </MenuPopover>
         </Menu>
-        <Button appearance="primary" icon={<I.Play16Filled />}>
+        <Button appearance="primary" icon={<I.Play16Filled />} onClick={onTest}>
           Test
         </Button>
       </div>
@@ -10438,7 +10451,7 @@ function MicrosoftIQCard() {
 /* ============================================================
    RIGHT PANEL
    ============================================================ */
-function TestPanel() {
+function TestPanel({ onClose }) {
   const s = useStyles();
   return (
     <aside className={s.right}>
@@ -10471,7 +10484,7 @@ function TestPanel() {
             </MenuPopover>
           </Menu>
           <Tooltip content="Close" relationship="label">
-            <Button appearance="subtle" icon={<I.Dismiss20Regular />} aria-label="Close" />
+            <Button appearance="subtle" icon={<I.Dismiss20Regular />} aria-label="Close" onClick={onClose} />
           </Tooltip>
         </div>
       </div>
@@ -10488,6 +10501,7 @@ function App() {
   const [tab, setTab] = React.useState("overview");
   const [railActive, setRailActive] = React.useState("agents");
   const [view, setView] = React.useState("power-platform");
+  const [showTest, setShowTest] = React.useState(false);
 
   if (view === "agent-builder" && window.AgentBuilderView) {
     return <window.AgentBuilderView onSwitchView={setView} />;
@@ -10503,10 +10517,13 @@ function App() {
     <FluentProvider theme={webLightTheme} style={{ height: "100vh" }}>
       <div className={s.page}>
         <TopBar onSwitchView={setView} />
-        <div className={s.shell}>
+        <div
+          className={s.shell}
+          style={{ gridTemplateColumns: showTest ? "64px 1fr 320px" : "64px 1fr" }}
+        >
           <Rail active={railActive} setActive={setRailActive} />
           <main className={s.main}>
-            <AgentHeader tab={tab} setTab={setTab} />
+            <AgentHeader tab={tab} setTab={setTab} onTest={() => setShowTest((v) => !v)} />
             <div className={s.content}>
               <DetailsCard />
               <ModelCard />
@@ -10514,7 +10531,7 @@ function App() {
               <MicrosoftIQCard />
             </div>
           </main>
-          <TestPanel />
+          {showTest && <TestPanel onClose={() => setShowTest(false)} />}
         </div>
       </div>
     </FluentProvider>
