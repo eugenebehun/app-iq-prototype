@@ -402,6 +402,24 @@ const useABStyles = makeStyles({
 });
 
 /* Tiny inline brand tile (used for the colored agent thumbnails in the sidebar) */
+function WaffleIcon({ size = 20 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 20 20" aria-hidden="true">
+      <g fill="currentColor">
+        <rect x="2" y="2" width="3.5" height="3.5" rx="0.5" />
+        <rect x="8.25" y="2" width="3.5" height="3.5" rx="0.5" />
+        <rect x="14.5" y="2" width="3.5" height="3.5" rx="0.5" />
+        <rect x="2" y="8.25" width="3.5" height="3.5" rx="0.5" />
+        <rect x="8.25" y="8.25" width="3.5" height="3.5" rx="0.5" />
+        <rect x="14.5" y="8.25" width="3.5" height="3.5" rx="0.5" />
+        <rect x="2" y="14.5" width="3.5" height="3.5" rx="0.5" />
+        <rect x="8.25" y="14.5" width="3.5" height="3.5" rx="0.5" />
+        <rect x="14.5" y="14.5" width="3.5" height="3.5" rx="0.5" />
+      </g>
+    </svg>
+  );
+}
+
 function Tile({ bg, children }) {
   return (
     <span style={{
@@ -475,7 +493,7 @@ function AgentBuilderView({ onSwitchView }) {
             <Menu>
               <MenuTrigger disableButtonEnhancement>
                 <Tooltip content="App launcher" relationship="label">
-                  <Button appearance="subtle" icon={<IB.PanelLeft24Regular />} aria-label="App launcher" />
+                  <Button appearance="subtle" icon={<WaffleIcon />} aria-label="App launcher" />
                 </Tooltip>
               </MenuTrigger>
               <MenuPopover>
@@ -1112,6 +1130,24 @@ function WaveGlyph() {
   );
 }
 
+function WaffleIcon({ size = 20 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 20 20" aria-hidden="true">
+      <g fill="currentColor">
+        <rect x="2" y="2" width="3.5" height="3.5" rx="0.5" />
+        <rect x="8.25" y="2" width="3.5" height="3.5" rx="0.5" />
+        <rect x="14.5" y="2" width="3.5" height="3.5" rx="0.5" />
+        <rect x="2" y="8.25" width="3.5" height="3.5" rx="0.5" />
+        <rect x="8.25" y="8.25" width="3.5" height="3.5" rx="0.5" />
+        <rect x="14.5" y="8.25" width="3.5" height="3.5" rx="0.5" />
+        <rect x="2" y="14.5" width="3.5" height="3.5" rx="0.5" />
+        <rect x="8.25" y="14.5" width="3.5" height="3.5" rx="0.5" />
+        <rect x="14.5" y="14.5" width="3.5" height="3.5" rx="0.5" />
+      </g>
+    </svg>
+  );
+}
+
 function CopilotView({ onSwitchView }) {
   const s = useCPStyles();
 
@@ -1124,7 +1160,7 @@ function CopilotView({ onSwitchView }) {
             <Menu>
               <MenuTrigger disableButtonEnhancement>
                 <Tooltip content="App launcher" relationship="label">
-                  <Button appearance="subtle" icon={<CP.PanelLeft24Regular />} aria-label="App launcher" />
+                  <Button appearance="subtle" icon={<WaffleIcon />} aria-label="App launcher" />
                 </Tooltip>
               </MenuTrigger>
               <MenuPopover>
@@ -1153,6 +1189,9 @@ function CopilotView({ onSwitchView }) {
                 </MenuList>
               </MenuPopover>
             </Menu>
+            <Tooltip content="Hide navigation" relationship="label">
+              <Button appearance="subtle" icon={<CP.PanelLeft24Regular />} aria-label="Hide navigation" />
+            </Tooltip>
           </div>
 
           <div />
@@ -1748,6 +1787,24 @@ const useCWStyles = makeStyles({
 });
 
 /* Copilot/Cowork purple-blue swirl */
+function WaffleIcon({ size = 20 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 20 20" aria-hidden="true">
+      <g fill="currentColor">
+        <rect x="2" y="2" width="3.5" height="3.5" rx="0.5" />
+        <rect x="8.25" y="2" width="3.5" height="3.5" rx="0.5" />
+        <rect x="14.5" y="2" width="3.5" height="3.5" rx="0.5" />
+        <rect x="2" y="8.25" width="3.5" height="3.5" rx="0.5" />
+        <rect x="8.25" y="8.25" width="3.5" height="3.5" rx="0.5" />
+        <rect x="14.5" y="8.25" width="3.5" height="3.5" rx="0.5" />
+        <rect x="2" y="14.5" width="3.5" height="3.5" rx="0.5" />
+        <rect x="8.25" y="14.5" width="3.5" height="3.5" rx="0.5" />
+        <rect x="14.5" y="14.5" width="3.5" height="3.5" rx="0.5" />
+      </g>
+    </svg>
+  );
+}
+
 function CoworkMark({ size = 16 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 32 32" aria-hidden="true">
@@ -1811,7 +1868,7 @@ function CoworkView({ onSwitchView }) {
             <Menu>
               <MenuTrigger disableButtonEnhancement>
                 <Tooltip content="App launcher" relationship="label">
-                  <Button appearance="subtle" icon={<IC.PanelLeft24Regular />} aria-label="App launcher" />
+                  <Button appearance="subtle" icon={<WaffleIcon />} aria-label="App launcher" />
                 </Tooltip>
               </MenuTrigger>
               <MenuPopover>
@@ -1840,6 +1897,9 @@ function CoworkView({ onSwitchView }) {
                 </MenuList>
               </MenuPopover>
             </Menu>
+            <Tooltip content="Hide navigation" relationship="label">
+              <Button appearance="subtle" icon={<IC.PanelLeft24Regular />} aria-label="Hide navigation" />
+            </Tooltip>
             <span className={s.msMark}>MS</span>
           </div>
           <div className={s.searchWrap}>
