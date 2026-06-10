@@ -1650,16 +1650,16 @@ function Ic({ n }) {
   return <C />;
 }
 
+const CS_NAV = {
+  logo: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAIAAAD8GO2jAAAFFklEQVR4nLVWzY8c1RGvqvfV89Hrj9ldg9dRkNeyQVYs4IAvySEHhCBWlOQUKYEDEf8B1yTX/Bs+RopyClxAEAkJBBI4kiM7tjGWzGLvLl7bszPT093vVVXUM2vv2LtrrSNSatWUWv1+v3m/elX1sKoiIIDCtp/a7Bv93z1tIc76qeEP4wn+z0YzfLjPGJ4mJtBGq4nXfcbwNLHdv5rxbnnjT58QMpGEXsjPLoUTvXBi4cmrLOzbBlf6VQqEbIjTeirfu0H4tZ/P8leWwon5sLzw+AmERwmm5+oJ8fefj6qyY2yyNhEmVjbIvM7V+zcMXve90D17LH/thYny26txlzqY8bzyT7l/FV0Xu0cvnR9+98UxbzR4dY69S8bWBoWICWW6M98LS39+dRYBqzrupYlsrqTLfwfc2u3GN+vOFUU/X7186t6159sBg2cXkjETmgkBoRx583R+9thDkCflQId3uai24BFSgXPz49b8uPez9dGZC9Uwv/PNqcHNk1mwzkeiRNLQVHfqfAZkNgeooKtfXhisfJQ699ZuPnf8qDs8GpNVMIBkeGjF++nHLahb3bsHznxaLV+8+unrXHati8YkImaZYm5pZB/qpQ0+tA/8Jc65vjr/o7UVzFZRi43Dz3zXfrY/loFLmAEyIqpuAVio2oeu3/n2pSwE64wxicVMMCfVgI/WwcqVi2r9fW0INtUrZT7E0VK1sgSbxeLBkfvxv3vLV/suq4Hiw9NAUhV18xvAMFhW82gdzJzZ+8Pvdc5OCPxAPWtm0Y2hM5ZOGbL+gc7niwufvBTO/fXiQj0gm1QVAWNhqqiGCImMmkaiR+rgQYQAJVCtfrNBD5vqGdtWbal5qZ1acyMmSqfI2p/9ZPm1j6/5LIEKAErtRYnFJjHKKLKN+VgOoAQYqh2oG6gbqmfpkHRr7VbaTZoHruvoY7QrRw6WfUBuI3BDUAUBZKAojgHTVg5glxxUSCPwI/UFhLEG5TnVQ1FzlkzZFupEAicnycVSvctQm2XMmVjH1oOxig3Tnr2oBhxJA1SoiylLdk65p2KFjbIb1WTQxWhscilh5DZKAMAonYqsGAdkACAB7tWLkAFLcCW4pCFxK2EHk58QNI+yrScxSxsxU80TdxHgVsoH1lvnDaBRzRanquxWB6xYqq3UxuRT8omJaEpghF2zD2n8PWj9jV+c24Djzo/BXMN2Zi2RMaBW4ZnTtqmSXetAkGqwLL7RWkJKSOQBnTYEVqTZhLCtN/XW4fl+jau1WLJkXXSeULziz3+d5QsPxvDOOmDFODnI3PxfnyLVg8RVywbrcjdFV7ZVv7zXMkVwoQaLhGicilN84zetn/4qTLrYbnUAgIt57z9pooM2D6hTII5meNumAoytXVeNx+HNiklHBkoiJ2hVnu3Zd97unnrebXe1nXUAqKd6xz/4ek4cipCIYSFhUhRqE0RX9uNoteZijIJAVIEgaiT83bnub3/Z1QdzGFAnOdiKH58Haxt8/tJHt+sRG1/HXl0eSGW7LrJYhDhkGQqPGKNKAlBdPGzefevgmZNbLXZX233grG3wv27d+fDG3fWaRFpxnMXCxwGnkfCAISpE/f25/M1f5LvO4dl4lmDnzIS1Df74+uiDK2V/5OuB8FB4yLmFP/7h0JmTYT93xz1n8oyOMI3/8dV4dY1fXnYvnwx7fbPTP2km/yBG2/eTqXb7jGf9Xu8n/kHna+xpbp7TbrPz1jr7fuL/C9E5PXJddZFdAAAAAElFTkSuQmCC",
+  home: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAIAAAD8GO2jAAACe0lEQVR4nO1US24TQRB9Vd3+AZHIx0YkSlhG2JFYsGCDUIK4AhZLxDVgEa5ALkGcO/ARRMhKYAGJIlYgvECxDQTymfGY7kLdEzsOZDEDyQalp1XdUlfVq/eqe0hEcJKDTzQ7TgESjNMeHLNEUWsrlT8Andy1sVj/vPQ8X8oVZysXq7cSRlGSlxw2994vvPqx/lFRyAiYgkKpMP3wXrY4cgwAQTN8/WAlan1jBA6AAgVnCxfy0/N3s8XhfwJor+3U728o6cap3ezDUFgo5Saq10dnr/4lwIcnW6uPGhkYJSYD00/tYULlN2dK+bHZy+PVm6mb/Obx13eLbQ1lQRoQkJaCQLGwIiWkBMyidjeDYLEO0Hh1LgXAxtO9em07Q1pAAhNbC8qAlQvRIsrFOmgl0I3aarY4MjZ3JSnA8tJu5LNbkBWytG9FSDtVmV3eQTaqUVtJAfClxcpVxxYkxCIH1grFckG0g+ux2WsGKSTqgg1pK8arbwxgnUR9S8bJRdqykGLPgIXTNJlgwd24amEN2mcDlgHru6LgGXg2yQHgKhdC10W6qgVmuKSHi6TEBs1OuBnGbARGI69FSSoG5KSXeDXQFjxZyd2ZPx+fbjd/vlzYbK/teCpswZ6lOjLV0bDiP4hfRSxovJzrnw6VdHHmbAQdkYqwPztIJ5Gr/WAPAdHgsesQ697tYiHW6ZocM/CZHZJjc+jYgCMnnbtR/Zm6B4MWh8MN9RhI/M7/8OiNo3lNlVWsPnr2UvlQKZOVbATdcW3QHdIR9OjMuRR/062WfbEUfm/ZWKepsr5xO/+bw9tn0af1roJV7j3aa9WhiUouKcAxDj7R7PgfAH4BP59VOeU6KgsAAAAASUVORK5CYII=",
+  agents: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAIAAAD8GO2jAAACx0lEQVR4nLVWPVYbMRAe8XyHSJxitadAoiXpbVMSemzK2NTJS+vdHh4lq5zC2lNY4xuEUChPErur/QNiwhTjz2NpNDPfjCXy+/EJPlImhAAAAbAfpI+sBQA7qO1BuKPJ45+nd0caZNg+CedXKw7WMGYPHAT5EA4mtsKE+GoS2+AQhbe0dGx/DVddRNxu4nULg9O63NZpAgDnabAj7ig7fo43Wh/jVzhQqsizDSLW3r//+Gmtvby8KLUGgKvFUgj5gocjQly0g3qPeLNexd4pZWnK8zwrtV4slpTSm/Vqj2bMAyF+Dsb6erX+FlcGAIQU1kKebYSQJ1JSxgBgtV49d72NJqDCPgN3kmMixmWpQxFi4Tzdo3GpMLo3GBaUWv8qiirq8Nngo+a0tl6vuuFTSpOEF0UBANPpvCge6p+ybGOMsY0EP06GOcjzLC59ECElIUSpgnNOCJRlkx8iKlVE8Xc4aNfOGJNnG+hJkqTG7BAxSbgxRrcLmGeZMbvgB7ochNOq2inlitAR6vtHKQUAs/n54BqlVOxnlIM8y/qbhXD9o4oHSqm1Fk23gD6JTdvbCAeU0v5mxtgeDSLWTAxmOcJB+x/cT2ZnJz2Rsu6f7bb1z9HJcoiDaAIIkNn8nFLWCZ/4yQgxxv0TBzGbn79xDqwQIt6cuLbZaa1DjIM9drW4/oc58Ek0TEzn89A/Up6in+SOcM55ylt1qPTAHAR8tbiucwcLWm8ppZ8YVZ6JXvjL4Ru5lUFTO4fTlAvp2BbydI+m1FrIUwIkz7tNPJ3NGTtu6t5UwssL7yJEc/n1AhFDuW7v7hHNl89nHW5v7+4PfBcxdrxYXufZhjImhCTEzWrCeX2L1/ZwT7rMq3u1xlEG/VNi+6G4ziB8DzdqhOG9OL6Tg/xnPPERD9TuZWzfrHsc9HEsY/ZxaXfRQB17b9B4zcDbtIv/Amlmz1di8UHxAAAAAElFTkSuQmCC",
+  workflows: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAIAAAD8GO2jAAADp0lEQVR4nL1WzW7jNhAeLvwKHT5EyLxDpRz8CFIKOG8g+Vpbt8Y+W+ptdws4e1jr2KJAkoOtvsC6AUL6BbbdA6kXyM8CLCjasmorf0W6A2Mw+CgOyZlvZkxubu9hXwiAgVeRDiHO3/4ZphU3DfQ5dsfYmz50W/Mk+qT9BggQQl6g4Rl4wybtOXg96dhzNhEzYJ5pmw0PGrod79iVRvSeb5u13dQt+PoFm/NfX5NvkAPyIl6blug/pjtgqkpo7K8lzVIphNaKcY5IgyBERPdN1rbUlhUgN3f3+7ErtR4OBpTi955PkRowWZoCwGg8VkplaYoUPc9HRAIkTScAcDoaI6XgPBgDNi4P5yBJBog0iuImmM8+5vkMADz/aH+pKAp7RvXEpqwr2YmzV1JqpaM4rhBSa8YPnfc47jtESlmWGggJj38AgFJbe2dXSx0IcY0Ua9xUuJAiGQ7c3YW4zvOZFMJtYZxHUR8pKqUOGHu6DnRZUqRAYCWkAcP54WIxz9KJu/tiPs+ySRCGcdz/DrHUejabJcMBAGj7msqbMYRsuvHN7f3O7/z8stvtfv7ry3R61uud9Hon3W53Oj2rlz4t/9zZMp2eteI2wTd3X283P2efX1gv07MPDlkur5r4p+WVw88vLqdnH5bLq89/f7m9+9rrnZxfXLovm7qFRfnso1zZPDPOPc9DpFKI4o+FFOJ0NGaMOzohUqSoldZaRVFfriQA7LCrquSqd69zUMUOKSUreToa/5xNsjTVWgGA7x9F7/sU6XD4o1b6dDTm/NDxXYpr91kQHtc5qOvAHuBqec0ZYxBRVAz56XRsU6d1zW7nPYpjxvhiPpcr6Z4YBGGWTRhjW05ufNYTbctcKe1j83zmOE4pdXiSDCrvfUppkgyybIKIWZrm+cw/OkKk+vE62PLXGMa5FGIohLug1qooCqQYxTEiut7w62+/A0AQhO7djHOtVN3ZHqsDl4O3794XxaIoFrooGOdBGHr+UalV3XkasbZ811rZSFa9uYk3X7DWiKgsN7Tn+Z7n13zQSmXZRArx9t0vO7FWWkshoqi/7c2bfytv9qPG+KHn+8lw4HJAKnwlZZZNCAAiTYYDXepmzpLhIAiP62w19YMTzXV8pIhIAaBYzOsmmmVpsZi7SeCmQhCElqNtYg/YqYPallauS10eHDB2yF33r7kvpdRaM8YY53ZmuLj/S9skfKuZbF44ac1/mMn/k27pRevzG/2kyesn7crx1v4HYXMsvaTmtUoAAAAASUVORK5CYII=",
+};
+
 /* Colorful Copilot Studio app mark (used as the app-launcher trigger). */
 function CSMark({ size = 22 }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 20 20" aria-hidden="true">
-      <rect x="2" y="2" width="7.2" height="7.2" rx="1.4" fill="#f25022" />
-      <rect x="10.8" y="2" width="7.2" height="7.2" rx="1.4" fill="#7fba00" />
-      <rect x="2" y="10.8" width="7.2" height="7.2" rx="1.4" fill="#00a4ef" />
-      <rect x="10.8" y="10.8" width="7.2" height="7.2" rx="1.4" fill="#ffb900" />
-    </svg>
-  );
+  return <img src={CS_NAV.logo} alt="" aria-hidden="true" style={{ width: size, height: size, display: "block" }} />;
 }
 
 /* Agent avatar mark — purple gradient tile with a </> glyph. */
@@ -1680,25 +1680,13 @@ function AgentCodeMark({ size = 56 }) {
 
 /* Clean line icons for the left rail (match the Copilot Studio v2 nav). */
 function RailHome() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M3 9.3L10 3.5l7 5.8" /><path d="M5 8.4V16h10V8.4" />
-    </svg>
-  );
+  return <img src={CS_NAV.home} alt="" aria-hidden="true" style={{ width: 20, height: 20, display: "block" }} />;
 }
 function RailAgents() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M10 2.6l6.1 3.5v7L10 16.6 3.9 13.1v-7z" /><circle cx="10" cy="9.6" r="2" />
-    </svg>
-  );
+  return <img src={CS_NAV.agents} alt="" aria-hidden="true" style={{ width: 20, height: 20, display: "block" }} />;
 }
 function RailLayers() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M10 3l7 3.8-7 3.8-7-3.8z" /><path d="M3.2 10.4L10 14l6.8-3.6" />
-    </svg>
-  );
+  return <img src={CS_NAV.workflows} alt="" aria-hidden="true" style={{ width: 20, height: 20, display: "block" }} />;
 }
 function RailServer() {
   return (
@@ -2066,7 +2054,7 @@ function CopilotStudioV2View({ onSwitchView }) {
             <div className={s.railTop}>
               <Button appearance="subtle" icon={<RailHome />} aria-label="Home" />
               <Button appearance="subtle" icon={<RailAgents />} aria-label="Agents" />
-              <Button appearance="subtle" icon={<RailLayers />} aria-label="Library" />
+              <Button appearance="subtle" icon={<RailLayers />} aria-label="Workflows" />
             </div>
             <div className={s.railBottom}>
               <Button appearance="subtle" icon={<RailServer />} aria-label="Environments" />
