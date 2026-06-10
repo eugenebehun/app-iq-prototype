@@ -401,6 +401,9 @@ function AgentBuilderView({ onSwitchView }) {
                   <MenuItem icon={<IB.WindowApps20Regular />} onClick={() => onSwitchView("copilot-studio")}>
                     Copilot Studio
                   </MenuItem>
+                  <MenuItem icon={<IB.WindowApps20Regular />} onClick={() => onSwitchView("copilot-studio-v2")}>
+                    Copilot Studio v2
+                  </MenuItem>
                   <MenuItem icon={<IB.BotSparkle20Regular />} onClick={() => onSwitchView("agent-builder")}>
                     Agent Builder
                   </MenuItem>
@@ -1185,6 +1188,9 @@ function CoworkView({ onSwitchView }) {
                   <MenuItem icon={<IC.WindowApps20Regular />} onClick={() => onSwitchView("copilot-studio")}>
                     Copilot Studio
                   </MenuItem>
+                  <MenuItem icon={<IC.WindowApps20Regular />} onClick={() => onSwitchView("copilot-studio-v2")}>
+                    Copilot Studio v2
+                  </MenuItem>
                   <MenuItem icon={<IC.BotSparkle20Regular />} onClick={() => onSwitchView("agent-builder")}>
                     Agent Builder
                   </MenuItem>
@@ -1621,6 +1627,495 @@ function PluginLogo({ id, bg, short }) {
   return <Tile bg={bg}>{short}</Tile>;
 }
 window.CoworkView = CoworkView;
+
+</script>
+
+<script type="text/plain" id="src-copilot-studio-v2">
+/* global React */
+/* Copilot Studio v2 — clean minimal agent builder (per Eugene's Image #5). */
+const {
+  FluentProvider, webLightTheme,
+  Button, Avatar, Tooltip, Switch, Divider, Badge,
+  Menu, MenuTrigger, MenuPopover, MenuList, MenuItem,
+  Dialog, DialogSurface, DialogBody, DialogTitle, DialogContent,
+  Tab, TabList,
+  Dropdown, Option,
+  makeStyles, tokens, mergeClasses,
+} = window.Fluent;
+const I2 = window.FluentIcons;
+
+/* Safe icon — falls back if a glyph name is missing so the view never blanks. */
+function Ic({ n }) {
+  const C = I2[n] || I2.MoreHorizontal20Regular;
+  return <C />;
+}
+
+/* Colorful Copilot Studio app mark (used as the app-launcher trigger). */
+function CSMark({ size = 22 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 20 20" aria-hidden="true">
+      <rect x="2" y="2" width="7.2" height="7.2" rx="1.4" fill="#f25022" />
+      <rect x="10.8" y="2" width="7.2" height="7.2" rx="1.4" fill="#7fba00" />
+      <rect x="2" y="10.8" width="7.2" height="7.2" rx="1.4" fill="#00a4ef" />
+      <rect x="10.8" y="10.8" width="7.2" height="7.2" rx="1.4" fill="#ffb900" />
+    </svg>
+  );
+}
+
+/* Agent avatar mark — purple gradient tile with a </> glyph. */
+function AgentCodeMark({ size = 56 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 56 56" aria-hidden="true">
+      <defs>
+        <linearGradient id="csv2-ag" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="#8b7bf0" /><stop offset="1" stopColor="#6d28d9" />
+        </linearGradient>
+      </defs>
+      <rect x="2" y="2" width="52" height="52" rx="14" fill="url(#csv2-ag)" />
+      <path d="M24 21l-6 7 6 7" fill="none" stroke="#fff" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M32 21l6 7-6 7" fill="none" stroke="#fff" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+/* App IQ brand mark (purple brain) for the Add Microsoft IQ dialog. */
+function AppIQMark({ size = 28 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true">
+      <defs>
+        <linearGradient id="csv2-appiq" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="#a855f7" /><stop offset="1" stopColor="#6d28d9" />
+        </linearGradient>
+      </defs>
+      <path d="M12 3a4 4 0 0 0-4 4v.5A3.5 3.5 0 0 0 5.5 11c0 1.1.5 2 1.3 2.7A3.5 3.5 0 0 0 9 19c.7 0 1.4-.2 2-.6V3z" fill="url(#csv2-appiq)" />
+      <path d="M12 3a4 4 0 0 1 4 4v.5a3.5 3.5 0 0 1 2.5 3.5c0 1.1-.5 2-1.3 2.7A3.5 3.5 0 0 1 15 19c-.7 0-1.4-.2-2-.6V3z" fill="#7c3aed" />
+    </svg>
+  );
+}
+
+/* Azure AI Foundry-style mark for the Add Microsoft IQ dialog. */
+function FoundryMark({ size = 28 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true">
+      <defs>
+        <linearGradient id="csv2-foundry" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="#5b8def" /><stop offset="1" stopColor="#7c3aed" />
+        </linearGradient>
+      </defs>
+      <path d="M11 3l-5 9 5 9 2-1-4-8 4-8z" fill="url(#csv2-foundry)" />
+      <path d="M14 5l4 7-4 7-2-1 3-6-3-6z" fill="#9b8cf0" opacity="0.9" />
+    </svg>
+  );
+}
+
+const useV2Styles = makeStyles({
+  root: {
+    height: "100vh",
+    display: "grid",
+    gridTemplateRows: "48px 1fr",
+    backgroundColor: tokens.colorNeutralBackground1,
+    color: tokens.colorNeutralForeground1,
+    fontFamily: tokens.fontFamilyBase,
+  },
+
+  /* top bar */
+  top: {
+    display: "grid",
+    gridTemplateColumns: "1fr auto 1fr",
+    alignItems: "center",
+    paddingLeft: "8px",
+    paddingRight: "12px",
+    borderBottom: `1px solid ${tokens.colorNeutralStroke2}`,
+  },
+  topLeft: { display: "flex", alignItems: "center", gap: "10px" },
+  appTitle: { fontSize: "14px", fontWeight: tokens.fontWeightSemibold },
+  topRight: { display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "2px" },
+  publish: {
+    backgroundColor: "#6d28d9",
+    border: "none",
+    marginLeft: "6px",
+    "&:hover": { backgroundColor: "#5b21b6" },
+    "&:hover:active": { backgroundColor: "#4c1d95" },
+  },
+
+  /* body: rail | canvas | right panel */
+  body: {
+    display: "grid",
+    gridTemplateColumns: "56px 1fr 380px",
+    minHeight: 0,
+  },
+
+  rail: {
+    borderRight: `1px solid ${tokens.colorNeutralStroke2}`,
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingTop: "10px",
+    paddingBottom: "12px",
+  },
+  railTop: { display: "flex", flexDirection: "column", alignItems: "center", gap: "4px" },
+  railBottom: { display: "flex", flexDirection: "column", alignItems: "center", gap: "8px" },
+
+  canvas: {
+    overflowY: "auto",
+    paddingTop: "28px",
+    paddingBottom: "60px",
+    paddingLeft: "40px",
+    paddingRight: "40px",
+  },
+  canvasInner: { maxWidth: "920px", marginLeft: "auto", marginRight: "auto" },
+
+  idRow: { display: "flex", alignItems: "center", gap: "16px", marginBottom: "28px" },
+  idTitleWrap: { display: "flex", alignItems: "center", gap: "8px" },
+  idTitle: { fontSize: "30px", fontWeight: tokens.fontWeightBold, margin: 0, letterSpacing: "-0.4px" },
+
+  instrHead: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: "14px",
+  },
+  instrLabel: { fontSize: "14px", fontWeight: tokens.fontWeightSemibold },
+  toolbar: { display: "flex", alignItems: "center", gap: "2px", color: tokens.colorNeutralForeground3 },
+  tbSep: { width: "1px", height: "18px", backgroundColor: tokens.colorNeutralStroke2, margin: "0 4px" },
+
+  instrBody: {
+    fontSize: "14px",
+    lineHeight: "22px",
+    color: tokens.colorNeutralForeground3,
+    whiteSpace: "pre-line",
+  },
+
+  /* right panel floating card */
+  panelCol: { padding: "16px", overflowY: "auto" },
+  card: {
+    border: `1px solid ${tokens.colorNeutralStroke2}`,
+    borderRadius: tokens.borderRadiusXLarge,
+    backgroundColor: tokens.colorNeutralBackground1,
+    boxShadow: tokens.shadow16,
+    padding: "8px",
+  },
+  modelRow: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: "8px 10px 12px",
+  },
+  modelLabel: { fontSize: "14px", fontWeight: tokens.fontWeightSemibold },
+
+  row: {
+    display: "flex",
+    alignItems: "flex-start",
+    justifyContent: "space-between",
+    gap: "12px",
+    padding: "12px",
+    borderRadius: tokens.borderRadiusMedium,
+    cursor: "pointer",
+    "&:hover": { backgroundColor: tokens.colorNeutralBackground2 },
+  },
+  rowActive: {
+    border: `1.5px solid ${tokens.colorNeutralForeground1}`,
+    "&:hover": { backgroundColor: tokens.colorNeutralBackground1 },
+  },
+  rowDisabled: { opacity: 0.45, cursor: "default", "&:hover": { backgroundColor: "transparent" } },
+  rowTitle: { fontSize: "14px", fontWeight: tokens.fontWeightSemibold, marginBottom: "3px" },
+  rowDesc: { fontSize: "12px", color: tokens.colorNeutralForeground3, lineHeight: "16px" },
+  rowAdd: { flex: "none", color: tokens.colorNeutralForeground2, marginTop: "-4px" },
+
+  /* Add Microsoft IQ dialog */
+  iqDialog: { maxWidth: "960px", width: "92vw" },
+  iqDialogDesc: { fontSize: "14px", color: tokens.colorNeutralForeground2, marginBottom: "18px" },
+  provRow: {
+    display: "flex",
+    alignItems: "center",
+    gap: "14px",
+    padding: "16px",
+    border: `1px solid ${tokens.colorNeutralStroke2}`,
+    borderRadius: tokens.borderRadiusLarge,
+    marginBottom: "10px",
+  },
+  provIcon: { flex: "none", display: "inline-flex" },
+  provText: { flex: 1, minWidth: 0 },
+  provName: {
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+    fontSize: "15px",
+    fontWeight: tokens.fontWeightSemibold,
+    marginBottom: "3px",
+  },
+  provDesc: { fontSize: "13px", color: tokens.colorNeutralForeground3, lineHeight: "18px" },
+  provAdd: { flex: "none", borderRadius: tokens.borderRadiusCircular },
+});
+
+const INSTR_TEXT =
+  "Instructions tell your agent how to behave, what it should help with, and how it should respond.\n\n" +
+  "Describe:\n" +
+  "- The agent's role and goal\n" +
+  "- What is in and out of scope\n" +
+  "- The tone and response style\n" +
+  "- When the agent should ask questions, use knowledge, or take actions\n\n" +
+  "Example:\n" +
+  "You are an IT support agent for Contoso employees. Help users troubleshoot common device and access " +
+  "issues. Be concise and clear. Ask follow-up questions if details are missing. If the issue requires admin " +
+  "access or sensitive account changes, direct the user to the help desk.";
+
+function AppLauncher({ onSwitchView }) {
+  return (
+    <Menu>
+      <MenuTrigger disableButtonEnhancement>
+        <Tooltip content="App launcher" relationship="label">
+          <Button appearance="subtle" icon={<CSMark size={22} />} aria-label="App launcher" />
+        </Tooltip>
+      </MenuTrigger>
+      <MenuPopover>
+        <MenuList>
+          <MenuItem icon={<Ic n="WindowApps20Regular" />} onClick={() => onSwitchView("copilot-studio")}>
+            Copilot Studio
+          </MenuItem>
+          <MenuItem icon={<Ic n="Sparkle20Regular" />} onClick={() => onSwitchView("copilot-studio-v2")}>
+            Copilot Studio v2
+          </MenuItem>
+          <MenuItem icon={<Ic n="BotSparkle20Regular" />} onClick={() => onSwitchView("agent-builder")}>
+            Agent Builder
+          </MenuItem>
+          <MenuItem icon={<Ic n="PeopleTeam20Regular" />} onClick={() => onSwitchView("cowork")}>
+            CoWork
+          </MenuItem>
+          <MenuItem icon={<Ic n="Apps20Regular" />} onClick={() => onSwitchView("power-platform")}>
+            Power Platform
+          </MenuItem>
+        </MenuList>
+      </MenuPopover>
+    </Menu>
+  );
+}
+
+function PanelRow({ title, desc, active, disabled, onAdd }) {
+  const s = useV2Styles();
+  return (
+    <div
+      className={mergeClasses(s.row, active && s.rowActive, disabled && s.rowDisabled)}
+      onClick={disabled ? undefined : onAdd}
+      role={onAdd ? "button" : undefined}
+      tabIndex={onAdd && !disabled ? 0 : undefined}
+    >
+      <div>
+        <div className={s.rowTitle}>{title}</div>
+        <div className={s.rowDesc}>{desc}</div>
+      </div>
+      <span className={s.rowAdd}>
+        <Button
+          appearance="subtle"
+          size="small"
+          icon={<Ic n="Add20Regular" />}
+          aria-label={"Add " + title}
+          disabled={disabled}
+          onClick={(e) => { e.stopPropagation(); if (onAdd) onAdd(); }}
+        />
+      </span>
+    </div>
+  );
+}
+
+function IQProviderRow({ mark, name, preview, desc }) {
+  const s = useV2Styles();
+  return (
+    <div className={s.provRow}>
+      <span className={s.provIcon}>{mark}</span>
+      <div className={s.provText}>
+        <div className={s.provName}>
+          {name}
+          {preview && <Badge appearance="tint" color="informative" size="small">Preview</Badge>}
+        </div>
+        <div className={s.provDesc}>{desc}</div>
+      </div>
+      <Button className={s.provAdd}>Add</Button>
+    </div>
+  );
+}
+
+function AddMicrosoftIQDialog({ open, onOpenChange }) {
+  const s = useV2Styles();
+  return (
+    <Dialog open={open} onOpenChange={(_, d) => onOpenChange(d.open)} modalType="modal">
+      <DialogSurface className={s.iqDialog}>
+        <DialogBody>
+          <DialogTitle
+            action={
+              <Button
+                appearance="subtle"
+                icon={<Ic n="Dismiss20Regular" />}
+                aria-label="Close"
+                onClick={() => onOpenChange(false)}
+              />
+            }
+          >
+            Add Microsoft IQ
+          </DialogTitle>
+          <DialogContent>
+            <div className={s.iqDialogDesc}>
+              Connect work signals, trusted org knowledge, and business data so the agent can
+              understand, reason, and act.
+            </div>
+            <IQProviderRow
+              mark={<AppIQMark />}
+              name="App IQ"
+              desc="Federate query, reasoning, and action across your business applications, skills, and semantic models — across environments and governed by each scope."
+            />
+            <IQProviderRow
+              mark={<FoundryMark />}
+              name="Foundry IQ"
+              preview
+              desc="Enables the agent to use enterprise knowledge sources and AI models from Azure AI Foundry to reason over broader organizational content and take actions."
+            />
+          </DialogContent>
+        </DialogBody>
+      </DialogSurface>
+    </Dialog>
+  );
+}
+
+function CopilotStudioV2View({ onSwitchView }) {
+  const s = useV2Styles();
+  const [tab, setTab] = React.useState("build");
+  const [memory, setMemory] = React.useState(false);
+  const [addIQ, setAddIQ] = React.useState(false);
+
+  return (
+    <FluentProvider theme={webLightTheme} style={{ height: "100vh" }}>
+      <div className={s.root}>
+        {/* ===== TOP BAR ===== */}
+        <header className={s.top}>
+          <div className={s.topLeft}>
+            <AppLauncher onSwitchView={onSwitchView} />
+            <span className={s.appTitle}>Untitled Agent</span>
+          </div>
+
+          <TabList selectedValue={tab} onTabSelect={(_, d) => setTab(d.value)}>
+            <Tab value="build">Build</Tab>
+            <Tab value="preview">Preview</Tab>
+            <Tab value="evaluate" disabled>Evaluate</Tab>
+            <Tab value="monitor" disabled>Monitor</Tab>
+          </TabList>
+
+          <div className={s.topRight}>
+            <Tooltip content="Save" relationship="label">
+              <Button appearance="subtle" icon={<Ic n="Save20Regular" />} aria-label="Save" />
+            </Tooltip>
+            <Tooltip content="Share" relationship="label">
+              <Button appearance="subtle" icon={<Ic n="Share20Regular" />} aria-label="Share" />
+            </Tooltip>
+            <Tooltip content="Connections" relationship="label">
+              <Button appearance="subtle" icon={<Ic n="PlugConnected20Regular" />} aria-label="Connections" />
+            </Tooltip>
+            <Tooltip content="More" relationship="label">
+              <Button appearance="subtle" icon={<Ic n="MoreHorizontal20Regular" />} aria-label="More" />
+            </Tooltip>
+            <Button
+              appearance="primary"
+              className={s.publish}
+              iconPosition="after"
+              icon={<Ic n="ChevronDown16Regular" />}
+            >
+              Publish
+            </Button>
+          </div>
+        </header>
+
+        {/* ===== BODY ===== */}
+        <div className={s.body}>
+          {/* left rail */}
+          <nav className={s.rail}>
+            <div className={s.railTop}>
+              <Button appearance="subtle" icon={<Ic n="Home20Regular" />} aria-label="Home" />
+              <Button appearance="subtle" icon={<Ic n="BotSparkle20Regular" />} aria-label="Agents" />
+              <Button appearance="subtle" icon={<Ic n="Stack20Regular" />} aria-label="Library" />
+            </div>
+            <div className={s.railBottom}>
+              <Button appearance="subtle" icon={<Ic n="Server20Regular" />} aria-label="Environments" />
+              <Avatar size={28} color="colorful" name="Eugene Behun" initials="EB" />
+              <Button appearance="subtle" size="small" icon={<Ic n="MoreHorizontal20Regular" />} aria-label="More" />
+            </div>
+          </nav>
+
+          {/* canvas */}
+          <main className={s.canvas}>
+            <div className={s.canvasInner}>
+              <div className={s.idRow}>
+                <AgentCodeMark size={56} />
+                <div className={s.idTitleWrap}>
+                  <h1 className={s.idTitle}>Untitled Agent</h1>
+                  <Tooltip content="Rename" relationship="label">
+                    <Button appearance="subtle" size="small" icon={<Ic n="Edit20Regular" />} aria-label="Rename" />
+                  </Tooltip>
+                </div>
+              </div>
+
+              <div className={s.instrHead}>
+                <span className={s.instrLabel}>Instructions</span>
+                <div className={s.toolbar}>
+                  <Button appearance="subtle" size="small" icon={<Ic n="ArrowUndo20Regular" />} aria-label="Undo" />
+                  <Button appearance="subtle" size="small" icon={<Ic n="ArrowRedo20Regular" />} aria-label="Redo" />
+                  <span className={s.tbSep} />
+                  <Button appearance="subtle" size="small" icon={<Ic n="TextBold20Regular" />} aria-label="Bold" />
+                  <Button appearance="subtle" size="small" icon={<Ic n="TextItalic20Regular" />} aria-label="Italic" />
+                  <Button appearance="subtle" size="small" icon={<Ic n="TextStrikethrough20Regular" />} aria-label="Strikethrough" />
+                  <span className={s.tbSep} />
+                  <Button appearance="subtle" size="small" icon={<Ic n="TextBulletListLtr20Regular" />} aria-label="Bulleted list" />
+                  <Button appearance="subtle" size="small" icon={<Ic n="TextNumberListLtr20Regular" />} aria-label="Numbered list" />
+                  <Button appearance="subtle" size="small" icon={<Ic n="TextFont20Regular" />} aria-label="Font" />
+                  <span className={s.tbSep} />
+                  <Button appearance="subtle" size="small" icon={<Ic n="TextQuote20Regular" />} aria-label="Quote" />
+                  <Button appearance="subtle" size="small" icon={<Ic n="Code20Regular" />} aria-label="Code" />
+                  <Button appearance="subtle" size="small" icon={<Ic n="Link20Regular" />} aria-label="Link" />
+                </div>
+              </div>
+
+              <div className={s.instrBody}>{INSTR_TEXT}</div>
+            </div>
+          </main>
+
+          {/* right panel */}
+          <aside className={s.panelCol}>
+            <div className={s.card}>
+              <div className={s.modelRow}>
+                <span className={s.modelLabel}>Model</span>
+                <Dropdown size="small" defaultValue="Claude Sonnet 4.6" defaultSelectedOptions={["sonnet46"]} style={{ minWidth: 180 }}>
+                  <Option value="sonnet46">Claude Sonnet 4.6</Option>
+                  <Option value="opus48">Claude Opus 4.8</Option>
+                  <Option value="gpt55">GPT-5.5</Option>
+                </Dropdown>
+              </div>
+              <PanelRow
+                title="Microsoft IQ"
+                desc="Bring in work context, business data, and app signals to improve answers and actions"
+                active
+                onAdd={() => setAddIQ(true)}
+              />
+              <PanelRow title="Skills" desc="Define behaviors through structured instructions" />
+              <PanelRow title="Tools" desc="Connect the agent to external systems and actions" />
+              <PanelRow title="Knowledge" desc="Provide trusted context to guide decisions" />
+              <PanelRow title="Connected agents" desc="Collaborate across agents to complete work" disabled />
+              <div className={mergeClasses(s.row)} style={{ cursor: "default" }}>
+                <div>
+                  <div className={s.rowTitle}>Memory</div>
+                  <div className={s.rowDesc}>Remember interactions, workflows and context for improved results.</div>
+                </div>
+                <Switch checked={memory} onChange={(_, d) => setMemory(d.checked)} />
+              </div>
+            </div>
+          </aside>
+        </div>
+
+        <AddMicrosoftIQDialog open={addIQ} onOpenChange={setAddIQ} />
+      </div>
+    </FluentProvider>
+  );
+}
+
+window.CopilotStudioV2View = CopilotStudioV2View;
 
 </script>
 
@@ -9389,6 +9884,9 @@ function PowerPlatformView({ onSwitchView }) {
                   <MenuItem icon={<IP.WindowApps20Regular />} onClick={() => onSwitchView("copilot-studio")}>
                     Copilot Studio
                   </MenuItem>
+                  <MenuItem icon={<IP.WindowApps20Regular />} onClick={() => onSwitchView("copilot-studio-v2")}>
+                    Copilot Studio v2
+                  </MenuItem>
                   <MenuItem icon={<IP.BotSparkle20Regular />} onClick={() => onSwitchView("agent-builder")}>
                     Agent Builder
                   </MenuItem>
@@ -10151,6 +10649,9 @@ function TopBar({ onSwitchView }) {
             <MenuItem icon={<I.WindowApps20Regular />} onClick={() => onSwitchView("copilot-studio")}>
               Copilot Studio
             </MenuItem>
+            <MenuItem icon={<I.WindowApps20Regular />} onClick={() => onSwitchView("copilot-studio-v2")}>
+              Copilot Studio v2
+            </MenuItem>
             <MenuItem icon={<I.BotSparkle20Regular />} onClick={() => onSwitchView("agent-builder")}>
               Agent Builder
             </MenuItem>
@@ -10512,6 +11013,9 @@ function App() {
   if (view === "power-platform" && window.PowerPlatformView) {
     return <window.PowerPlatformView onSwitchView={setView} />;
   }
+  if (view === "copilot-studio-v2" && window.CopilotStudioV2View) {
+    return <window.CopilotStudioV2View onSwitchView={setView} />;
+  }
 
   return (
     <FluentProvider theme={webLightTheme} style={{ height: "100vh" }}>
@@ -10568,7 +11072,7 @@ if (window.Fluent && window.FluentIcons) {
 
     // Order matters: view components must be on `window` before app.jsx
     // (last) runs and self-mounts the <App/> router.
-    for (const id of ["src-agent-builder", "src-cowork", "src-app-iq", "src-power-platform", "src-app"]) {
+    for (const id of ["src-agent-builder", "src-cowork", "src-copilot-studio-v2", "src-app-iq", "src-power-platform", "src-app"]) {
       const src = document.getElementById(id).textContent;
       const out = Babel.transform(src, { presets: ["env", "react"] }).code;
       // eslint-disable-next-line no-new-func
